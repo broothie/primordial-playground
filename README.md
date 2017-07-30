@@ -1,3 +1,3 @@
-# [Minecraft 2D][gh-pages-link]
+# [Conway's Game of Life][gh-pages-link]
 
-[gh-pages-link]: https://boothandrewd.github.io/minecraft-2d/
+[gh-pages-link]: https://boothandrewd.github.io/conways-gol/
