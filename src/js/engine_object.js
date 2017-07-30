@@ -9,7 +9,6 @@ export default class {
       speed: 0,
       color: 'black',
       visible: true,
-      dragWithMouse: false
     }, options);
   }
 
@@ -22,10 +21,6 @@ export default class {
   }
 
   update() {
-    if (this.dragWithMouse) {
-      this.move(this.engine.mouseDelta);
-    }
-
     this.position.update();
     this.size.update();
   }

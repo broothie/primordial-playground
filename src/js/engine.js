@@ -65,18 +65,25 @@ export default class {
     });
 
     // Set up mouse status tracking
-    this.mouseDelta = new Pair;
     const handleMouseMove = ({ clientX, clientY }) => {
-      this.mouseLocation = new Pair(clientX, clientY);
-      this.mouseDelta = this.mouseDownLocation.delta(this.mouseLocation);
+      this.mousePosition = new Pair(clientX, clientY);
+      const mouseDelta = this.mouseDownPosition.delta(this.mousePosition);
+      this.eachDragObject(mdo => {
+        mdo.position = mdo.mouseDownPosition.offset(mouseDelta);
+      });
     };
-    this.body.addEventListener('mousedown', ({ clientX, clientY}) => {
+
+    this.body.addEventListener('mousedown', ({ clientX, clientY }) => {
       this.body.addEventListener('mousemove', handleMouseMove);
-      this.mouseDownLocation = new Pair(clientX, clientY);
+      this.mouseDownPosition = new Pair(clientX, clientY);
+      this.eachDragObject(mdo => {
+        mdo.mouseDownPosition = mdo.position;
+      });
     });
-    this.body.addEventListener('mouseup', event => {
+
+    this.body.addEventListener('mouseup', ({ clientX, clientY }) => {
       this.body.removeEventListener('mousemove', handleMouseMove);
-      this.mouseDownLocation = null;
+      this.mouseDownPosition = new Pair(clientX, clientY);
       this.mouseDelta = new Pair;
     });
   }
@@ -103,6 +110,10 @@ export default class {
     return Array.from(this.engineObjects).filter(engineObject => (
       engineObject.dragWithMouse
     ));
+  }
+
+  eachDragObject(callback) {
+    this.mouseDragObjects().forEach(mdo => callback(mdo));
   }
 
   start(frameRate) {

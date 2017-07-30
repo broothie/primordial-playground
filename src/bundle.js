@@ -142,15 +142,15 @@ var _engine = __webpack_require__(6);
 
 var _engine2 = _interopRequireDefault(_engine);
 
-var _engine_object = __webpack_require__(7);
+var _mouse_drag_object = __webpack_require__(8);
 
-var _engine_object2 = _interopRequireDefault(_engine_object);
+var _mouse_drag_object2 = _interopRequireDefault(_mouse_drag_object);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 document.addEventListener('DOMContentLoaded', function () {
   new _engine2.default({
-    engineObjects: new Set([new _engine_object2.default({ dragWithMouse: true, size: new _pair2.default(30, 30) })])
+    engineObjects: new Set([new _mouse_drag_object2.default({ size: new _pair2.default(30, 30) })])
   }).start();
 });
 
@@ -252,24 +252,34 @@ var _class = function () {
     });
 
     // Set up mouse status tracking
-    this.mouseDelta = new _pair2.default();
     var handleMouseMove = function handleMouseMove(_ref) {
       var clientX = _ref.clientX,
           clientY = _ref.clientY;
 
-      _this.mouseLocation = new _pair2.default(clientX, clientY);
-      _this.mouseDelta = _this.mouseDownLocation.delta(_this.mouseLocation);
+      _this.mousePosition = new _pair2.default(clientX, clientY);
+      var mouseDelta = _this.mouseDownPosition.delta(_this.mousePosition);
+      _this.eachDragObject(function (mdo) {
+        mdo.position = mdo.mouseDownPosition.offset(mouseDelta);
+      });
     };
+
     this.body.addEventListener('mousedown', function (_ref2) {
       var clientX = _ref2.clientX,
           clientY = _ref2.clientY;
 
       _this.body.addEventListener('mousemove', handleMouseMove);
-      _this.mouseDownLocation = new _pair2.default(clientX, clientY);
+      _this.mouseDownPosition = new _pair2.default(clientX, clientY);
+      _this.eachDragObject(function (mdo) {
+        mdo.mouseDownPosition = mdo.position;
+      });
     });
-    this.body.addEventListener('mouseup', function (event) {
+
+    this.body.addEventListener('mouseup', function (_ref3) {
+      var clientX = _ref3.clientX,
+          clientY = _ref3.clientY;
+
       _this.body.removeEventListener('mousemove', handleMouseMove);
-      _this.mouseDownLocation = null;
+      _this.mouseDownPosition = new _pair2.default(clientX, clientY);
       _this.mouseDelta = new _pair2.default();
     });
   }
@@ -307,6 +317,13 @@ var _class = function () {
     value: function mouseDragObjects() {
       return Array.from(this.engineObjects).filter(function (engineObject) {
         return engineObject.dragWithMouse;
+      });
+    }
+  }, {
+    key: 'eachDragObject',
+    value: function eachDragObject(callback) {
+      this.mouseDragObjects().forEach(function (mdo) {
+        return callback(mdo);
       });
     }
   }, {
@@ -369,8 +386,7 @@ var _class = function () {
       size: new _pair2.default(1, 1),
       speed: 0,
       color: 'black',
-      visible: true,
-      dragWithMouse: false
+      visible: true
     }, options);
   }
 
@@ -387,10 +403,6 @@ var _class = function () {
   }, {
     key: 'update',
     value: function update() {
-      if (this.dragWithMouse) {
-        this.move(this.engine.mouseDelta);
-      }
-
       this.position.update();
       this.size.update();
     }
@@ -412,6 +424,53 @@ var _class = function () {
 
   return _class;
 }();
+
+exports.default = _class;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _engine_object = __webpack_require__(7);
+
+var _engine_object2 = _interopRequireDefault(_engine_object);
+
+var _pair = __webpack_require__(1);
+
+var _pair2 = _interopRequireDefault(_pair);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _class = function (_EngineObject) {
+  _inherits(_class, _EngineObject);
+
+  function _class(options) {
+    _classCallCheck(this, _class);
+
+    var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, Object.assign({
+      mouseDelta: new _pair2.default()
+    }, options)));
+
+    _this.dragWithMouse = true;
+    _this.mouseDownPosition = _this.position;
+    return _this;
+  }
+
+  return _class;
+}(_engine_object2.default);
 
 exports.default = _class;
 
