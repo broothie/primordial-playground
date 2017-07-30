@@ -11,6 +11,7 @@ export default class {
       size: new Pair(1, 1),
       speed: 1,
       color: 'black',
+      visible: true
     }, options);
   }
 
@@ -28,6 +29,7 @@ export default class {
   }
 
   draw() {
+    if (!this.visible) return;
     this.context.fillStyle = this.color;
     this.context.fillRect(...this.position.xy, ...this.size.pair);
   }

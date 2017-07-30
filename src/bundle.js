@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,11 +70,153 @@
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _pair = __webpack_require__(1);
+
+var _pair2 = _interopRequireDefault(_pair);
+
+var _triple = __webpack_require__(4);
+
+var _triple2 = _interopRequireDefault(_triple);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var _class = function () {
+  function _class(game, options) {
+    _classCallCheck(this, _class);
+
+    this.game = game;
+    this.context = game.context;
+
+    Object.assign(this, {
+      position: new _triple2.default(),
+      size: new _pair2.default(1, 1),
+      speed: 1,
+      color: 'black',
+      visible: true
+    }, options);
+  }
+
+  _createClass(_class, [{
+    key: 'register',
+    value: function register() {
+      this.game.registerGameObject(this);
+    }
+  }, {
+    key: 'unregister',
+    value: function unregister() {
+      this.game.unregisterGameObject(this);
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+      this.position.update();
+      this.size.update();
+    }
+  }, {
+    key: 'draw',
+    value: function draw() {
+      var _context;
+
+      if (!this.visible) return;
+      this.context.fillStyle = this.color;
+      (_context = this.context).fillRect.apply(_context, _toConsumableArray(this.position.xy).concat(_toConsumableArray(this.size.pair)));
+    }
+  }, {
+    key: 'move',
+    value: function move() {
+      for (var _len = arguments.length, offset = Array(_len), _key = 0; _key < _len; _key++) {
+        offset[_key] = arguments[_key];
+      }
+
+      this.position = this.position.offset(new (Function.prototype.bind.apply(_triple2.default, [null].concat(offset)))());
+    }
+  }]);
+
+  return _class;
+}();
+
+exports.default = _class;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Pair = function () {
+  function Pair() {
+    var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    _classCallCheck(this, Pair);
+
+    this.x = x;
+    this.y = y;
+
+    this.update();
+  }
+
+  _createClass(Pair, [{
+    key: "update",
+    value: function update() {
+      this.pair = [this.x, this.y];
+    }
+  }, {
+    key: "distance",
+    value: function distance(other) {
+      return Math.sqrt(this.pair.map(function (thisDim, index) {
+        return Math.pow(thisDim - other.pair[index]);
+      }).reduce(function (sum, value) {
+        return sum + value;
+      }));
+    }
+  }, {
+    key: "offset",
+    value: function offset(other) {
+      return new (Function.prototype.bind.apply(Pair, [null].concat(_toConsumableArray(this.pair.map(function (thisDim, index) {
+        return thisDim + other.pair[index];
+      })))))();
+    }
+  }]);
+
+  return Pair;
+}();
+
+exports.default = Pair;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _game = __webpack_require__(3);
 
 var _game2 = _interopRequireDefault(_game);
 
-var _character = __webpack_require__(7);
+var _character = __webpack_require__(5);
 
 var _character2 = _interopRequireDefault(_character);
 
@@ -87,8 +229,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /***/ }),
-/* 1 */,
-/* 2 */,
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -101,7 +241,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _game_object = __webpack_require__(4);
+var _game_object = __webpack_require__(0);
 
 var _game_object2 = _interopRequireDefault(_game_object);
 
@@ -241,146 +381,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _pair = __webpack_require__(5);
-
-var _pair2 = _interopRequireDefault(_pair);
-
-var _triple = __webpack_require__(6);
-
-var _triple2 = _interopRequireDefault(_triple);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var _class = function () {
-  function _class(game, options) {
-    _classCallCheck(this, _class);
-
-    this.game = game;
-    this.context = game.context;
-
-    Object.assign(this, {
-      position: new _triple2.default(),
-      size: new _pair2.default(1, 1),
-      speed: 1,
-      color: 'black'
-    }, options);
-  }
-
-  _createClass(_class, [{
-    key: 'register',
-    value: function register() {
-      this.game.registerGameObject(this);
-    }
-  }, {
-    key: 'unregister',
-    value: function unregister() {
-      this.game.unregisterGameObject(this);
-    }
-  }, {
-    key: 'update',
-    value: function update() {
-      this.position.update();
-      this.size.update();
-    }
-  }, {
-    key: 'draw',
-    value: function draw() {
-      var _context;
-
-      this.context.fillStyle = this.color;
-      (_context = this.context).fillRect.apply(_context, _toConsumableArray(this.position.xy).concat(_toConsumableArray(this.size.pair)));
-    }
-  }, {
-    key: 'move',
-    value: function move() {
-      for (var _len = arguments.length, offset = Array(_len), _key = 0; _key < _len; _key++) {
-        offset[_key] = arguments[_key];
-      }
-
-      this.position = this.position.offset(new (Function.prototype.bind.apply(_triple2.default, [null].concat(offset)))());
-    }
-  }]);
-
-  return _class;
-}();
-
-exports.default = _class;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Pair = function () {
-  function Pair() {
-    var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-    _classCallCheck(this, Pair);
-
-    this.x = x;
-    this.y = y;
-
-    this.update();
-  }
-
-  _createClass(Pair, [{
-    key: "update",
-    value: function update() {
-      this.pair = [this.x, this.y];
-    }
-  }, {
-    key: "distance",
-    value: function distance(other) {
-      return Math.sqrt(this.pair.map(function (thisDim, index) {
-        return Math.pow(thisDim - other.pair[index]);
-      }).reduce(function (sum, value) {
-        return sum + value;
-      }));
-    }
-  }, {
-    key: "offset",
-    value: function offset(other) {
-      return new (Function.prototype.bind.apply(Pair, [null].concat(_toConsumableArray(this.pair.map(function (thisDim, index) {
-        return thisDim + other.pair[index];
-      })))))();
-    }
-  }]);
-
-  return Pair;
-}();
-
-exports.default = Pair;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -430,7 +430,7 @@ var Triple = function () {
 exports.default = Triple;
 
 /***/ }),
-/* 7 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -446,11 +446,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _pair = __webpack_require__(5);
+var _pair = __webpack_require__(1);
 
 var _pair2 = _interopRequireDefault(_pair);
 
-var _game_object = __webpack_require__(4);
+var _game_object = __webpack_require__(0);
 
 var _game_object2 = _interopRequireDefault(_game_object);
 
