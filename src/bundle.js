@@ -335,7 +335,7 @@ var _class = function () {
       _this.downkeys.delete(event.keyCode);
     });
 
-    // Set up mouse status tracking
+    // Set up mouse dragging
     var handleMouseMove = function handleMouseMove(_ref) {
       var clientX = _ref.clientX,
           clientY = _ref.clientY;

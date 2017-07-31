@@ -70,7 +70,7 @@ export default class {
       this.downkeys.delete(event.keyCode);
     });
 
-    // Set up mouse status tracking
+    // Set up mouse dragging
     const handleMouseMove = ({ clientX, clientY }) => {
       this.mousePosition = new Pair(clientX, clientY);
       const mouseDelta = this.mouseDownPosition.delta(this.mousePosition);
