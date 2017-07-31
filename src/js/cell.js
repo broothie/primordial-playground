@@ -26,7 +26,8 @@ export default class extends MouseDragObject {
   }
 
   update() {
-    if (this.engine.frameCount % (this.engine.frameRate / this.grid.stepRate) !== 0) {
+    const engine = this.engine;
+    if (!(engine.frameCount % Math.floor(engine.frameRate / this.grid.stepRate))) {
       return;
     }
 
@@ -40,15 +41,15 @@ export default class extends MouseDragObject {
         this.color = 'Black';
         this.willLive = true;
       } else {
-        this.color = 'Red';
+        this.color = 'Gray';
         this.willLive = false;
       }
     } else {
       if (neighborCount === 3) {
-        this.color = 'Green';
+        this.color = 'LightGray';
         this.willLive = true;
       } else {
-        this.color = 'WhiteSmoke';
+        this.color = 'White';
         this.willLive = false;
       }
     }

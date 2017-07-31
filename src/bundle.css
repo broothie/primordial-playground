@@ -1,10 +1,103 @@
+html,
+body,
+div,
+span,
+nav,
+header,
+hr,
+main,
+section,
+article,
+footer,
+p,
+a,
+i,
+strong,
+small,
+img,
+h1, h2,
+ul, li,
+time,
+form,
+label,
+fieldset,
+button,
+textarea,
+input {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  text-decoration: inherit;
+  vertical-align: inherit;
+  box-sizing: inherit;
+  background: transparent; }
+
+ul {
+  list-style: none; }
+
+img {
+  display: block;
+  width: 100%;
+  height: auto; }
+
+input[type="password"],
+input[type="email"],
+input[type="text"],
+input[type="submit"],
+textarea,
+button {
+  /*
+  Get rid of native styling. Read more here:
+  http://css-tricks.com/almanac/properties/a/appearance/
+  */
+  -webkit-appearance: none;
+  -moz-appearance: none; }
+
+button,
+input[type="submit"] {
+  cursor: pointer; }
+
+/* Clearfix */
+.clearfix:after {
+  content: "";
+  display: block;
+  clear: both; }
+
 html, body {
   margin: 0;
   border: 0;
   padding: 0;
   width: 100%;
-  height: 100%; }
+  height: 100%;
+  font-family: Monaco, monospace;
+  font-size: 12px; }
   html, html canvas, body, body canvas {
-    overflow: hidden; }
+    overflow: hidden;
+    cursor: move; }
+  html section, body section {
+    position: fixed;
+    left: 15px;
+    top: 15px;
+    width: 320px;
+    padding: 15px 20px;
+    border: 1px solid WhiteSmoke;
+    background-color: White;
+    opacity: 0.983;
+    cursor: default; }
+    html section h1, body section h1 {
+      font-size: 24px; }
+    html section article, body section article {
+      margin-top: 10px;
+      display: none; }
+      html section article a, body section article a {
+        color: Blue; }
+        html section article a:hover, body section article a:hover {
+          text-decoration: underline; }
+    html section:hover article, body section:hover article {
+      display: block; }
 
 /*# sourceMappingURL=bundle.css.map */

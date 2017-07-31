@@ -72,6 +72,8 @@
 "use strict";
 
 
+__webpack_require__(15);
+
 var _pair = __webpack_require__(10);
 
 var _pair2 = _interopRequireDefault(_pair);
@@ -87,13 +89,7 @@ var _grid2 = _interopRequireDefault(_grid);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 document.addEventListener('DOMContentLoaded', function () {
-  new _engine2.default({
-    engineObjects: new Set(new _grid2.default({
-      dimensions: new _pair2.default(100, 100),
-      seedWeight: 0.05,
-      stepRate: 12
-    }).flatten())
-  }).start();
+  new _engine2.default({ engineObjects: new _grid2.default().asSet() }).run();
 });
 
 /***/ }),
@@ -275,8 +271,7 @@ var _class = function () {
       context: null,
       engineObjects: new Set(),
       frameRate: 60,
-      backgroundColor: 'White',
-      stepRate: 60
+      backgroundColor: 'White'
     }, options);
 
     // Get body reference
@@ -414,8 +409,8 @@ var _class = function () {
       });
     }
   }, {
-    key: 'start',
-    value: function start(frameRate) {
+    key: 'run',
+    value: function run(frameRate) {
       var _this3 = this;
 
       this.loop = setInterval(function () {
@@ -556,7 +551,8 @@ var _class = function (_MouseDragObject) {
   }, {
     key: 'update',
     value: function update() {
-      if (this.engine.frameCount % (this.engine.frameRate / this.grid.stepRate) !== 0) {
+      var engine = this.engine;
+      if (!(engine.frameCount % Math.floor(engine.frameRate / this.grid.stepRate))) {
         return;
       }
 
@@ -570,15 +566,15 @@ var _class = function (_MouseDragObject) {
           this.color = 'Black';
           this.willLive = true;
         } else {
-          this.color = 'Red';
+          this.color = 'Gray';
           this.willLive = false;
         }
       } else {
         if (neighborCount === 3) {
-          this.color = 'Green';
+          this.color = 'LightGray';
           this.willLive = true;
         } else {
-          this.color = 'WhiteSmoke';
+          this.color = 'White';
           this.willLive = false;
         }
       }
@@ -632,11 +628,11 @@ var _class = function () {
 
     Object.assign(this, {
       grid: null,
-      dimensions: new _pair2.default(10, 10),
+      dimensions: new _pair2.default(150, 150),
       cellSize: 10,
-      borderSize: 1,
+      borderSize: 0,
       seedWeight: 0.1,
-      stepRate: 4
+      stepRate: 30
     }, options);
 
     if (!this.grid) {
@@ -683,10 +679,20 @@ var _class = function () {
       return flattened;
     }
   }, {
+    key: 'asSet',
+    value: function asSet() {
+      return new Set(this.flatten());
+    }
+  }, {
     key: 'getCell',
     value: function getCell(x, y) {
-      if (!(0 <= x && x < this.dimensions.x)) return;
-      if (!(0 <= y && y < this.dimensions.y)) return;
+      if (!(0 <= x && x < this.dimensions.x)) {
+        x = x.mod(this.dimensions.x);
+      }
+
+      if (!(0 <= y && y < this.dimensions.y)) {
+        y = y.mod(this.dimensions.y);
+      }
       return this.grid[y][x];
     }
   }]);
@@ -695,6 +701,17 @@ var _class = function () {
 }();
 
 exports.default = _class;
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Number.prototype.mod = function (n) {
+  return (this % n + n) % n;
+};
 
 /***/ })
 /******/ ]);

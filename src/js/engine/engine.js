@@ -8,8 +8,7 @@ export default class {
       context: null,
       engineObjects: new Set,
       frameRate: 60,
-      backgroundColor: 'White',
-      stepRate: 60,
+      backgroundColor: 'White'
     }, options);
 
     // Get body reference
@@ -121,7 +120,7 @@ export default class {
     this.mouseDragObjects().forEach(mdo => callback(mdo));
   }
 
-  start(frameRate) {
+  run(frameRate) {
     this.loop = setInterval(() => {
       this.dispatchEngineActions();
       this.dispatchObjectActions();

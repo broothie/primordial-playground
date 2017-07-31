@@ -5,11 +5,11 @@ export default class {
   constructor(options) {
     Object.assign(this, {
       grid: null,
-      dimensions: new Pair(10, 10),
+      dimensions: new Pair(150, 150),
       cellSize: 10,
-      borderSize: 1,
+      borderSize: 0,
       seedWeight: 0.1,
-      stepRate: 4
+      stepRate: 30
     }, options);
 
     if (!this.grid) {
@@ -49,9 +49,18 @@ export default class {
     return flattened;
   }
 
+  asSet() {
+    return new Set(this.flatten());
+  }
+
   getCell(x, y) {
-    if (!(0 <= x && x < this.dimensions.x)) return;
-    if (!(0 <= y && y < this.dimensions.y)) return;
+    if (!(0 <= x && x < this.dimensions.x)) {
+      x = x.mod(this.dimensions.x);
+    }
+
+    if (!(0 <= y && y < this.dimensions.y)) {
+      y = y.mod(this.dimensions.y);
+    }
     return this.grid[y][x];
   }
 }
