@@ -4,5 +4,7 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%; }
+  html, html canvas, body, body canvas {
+    overflow: hidden; }
 
 /*# sourceMappingURL=bundle.css.map */
