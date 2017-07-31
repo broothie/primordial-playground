@@ -3,9 +3,7 @@ import Pair from './pair';
 
 export default class extends EngineObject {
   constructor(options) {
-    super(Object.assign({
-      mouseDelta: new Pair,
-    }, options));
+    super(Object.assign({}, options));
 
     this.dragWithMouse = true;
     this.mouseDownPosition = this.position;

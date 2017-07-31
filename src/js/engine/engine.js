@@ -8,7 +8,8 @@ export default class {
       context: null,
       engineObjects: new Set,
       frameRate: 60,
-      backgroundColor: 'white'
+      backgroundColor: 'White',
+      stepRate: 60,
     }, options);
 
     // Get body reference
@@ -36,6 +37,12 @@ export default class {
     this.objectActions = ['update', 'draw'];
 
     this.engineObjects.forEach(engineObject => { engineObject.engine = this; });
+
+    // Action for updating framecount
+    this.frameCount = 0;
+    this.engineActions.push(() => {
+      this.frameCount++;
+    });
 
     // Action for keeping track of viewport size
     this.engineActions.push(() => {
@@ -72,7 +79,6 @@ export default class {
         mdo.position = mdo.mouseDownPosition.offset(mouseDelta);
       });
     };
-
     this.body.addEventListener('mousedown', ({ clientX, clientY }) => {
       this.body.addEventListener('mousemove', handleMouseMove);
       this.mouseDownPosition = new Pair(clientX, clientY);
@@ -80,7 +86,6 @@ export default class {
         mdo.mouseDownPosition = mdo.position;
       });
     });
-
     this.body.addEventListener('mouseup', ({ clientX, clientY }) => {
       this.body.removeEventListener('mousemove', handleMouseMove);
       this.mouseDownPosition = new Pair(clientX, clientY);

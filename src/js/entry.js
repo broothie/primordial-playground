@@ -1,11 +1,13 @@
-import Pair from './pair';
-import Engine from './engine';
-import mouseDragObject from './mouse_drag_object';
+import Pair from './engine/pair';
+import Engine from './engine/engine';
+import Grid from './grid';
 
 document.addEventListener('DOMContentLoaded', () => {
   new Engine({
-    engineObjects: new Set([
-      new mouseDragObject({ size: new Pair(30, 30) })
-    ])
+    engineObjects: new Set((new Grid({
+      dimensions: new Pair(100, 100),
+      seedWeight: 0.05,
+      stepRate: 12
+    })).flatten())
   }).start();
 });
