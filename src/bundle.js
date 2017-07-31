@@ -74,6 +74,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -118,6 +120,21 @@ var Pair = function () {
       return new (Function.prototype.bind.apply(Pair, [null].concat(_toConsumableArray(this.pair.map(function (dim, idx) {
         return dim + other.pair[idx];
       })))))();
+    }
+  }, {
+    key: "withinCorners",
+    value: function withinCorners(corner1, corner2) {
+      var _sort = [corner1.x, corner2.x].sort(),
+          _sort2 = _slicedToArray(_sort, 2),
+          x1 = _sort2[0],
+          x2 = _sort2[1];
+
+      var _sort3 = [corner1.y, corner2.y].sort(),
+          _sort4 = _slicedToArray(_sort3, 2),
+          y1 = _sort4[0],
+          y2 = _sort4[1];
+
+      return x1 <= this.x && this.x < x2 && y1 <= this.y && this.y < y2;
     }
   }]);
 
@@ -265,8 +282,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var _class = function () {
   function _class(options) {
-    var _this = this;
-
     _classCallCheck(this, _class);
 
     this.options = Object.assign(this, {
@@ -277,99 +292,146 @@ var _class = function () {
       backgroundColor: 'White'
     }, options);
 
-    // Get body reference
-    this.body = document.getElementsByTagName('body')[0];
-
-    // Get or create canvas
-    if (!this.canvas) {
-      this.canvas = document.getElementsByTagName('canvas')[0];
-      if (!this.canvas) {
-        this.canvas = document.createElement('canvas');
-      }
-      this.body.appendChild(this.canvas);
-    }
-
-    // Create context
-    if (!this.context) {
-      this.context = this.canvas.getContext('2d');
-    }
-
-    // Set focus to canvas
-    this.canvas.focus();
-
-    // Set up engine and object actions
-    this.engineActions = [];
-    this.objectActions = ['update', 'draw'];
-
-    this.engineObjects.forEach(function (engineObject) {
-      engineObject.engine = _this;
-    });
-
-    // Action for updating framecount
-    this.frameCount = 0;
-    this.engineActions.push(function () {
-      _this.frameCount++;
-    });
-
-    // Action for keeping track of viewport size
-    this.engineActions.push(function () {
-      _this.width = innerWidth;
-      _this.height = innerHeight;
-    });
-
-    // Action for updating canvas to fill viewport
-    this.engineActions.push(function () {
-      _this.canvas.width = _this.width;
-      _this.canvas.height = _this.height;
-    });
-
-    // Action for clearing background
-    this.engineActions.push(function () {
-      _this.context.fillStyle = _this.backgroundColor;
-      _this.context.fillRect(0, 0, _this.width, _this.height);
-    });
-
-    // Set up key status tracking
-    this.downkeys = new Set();
-    this.body.addEventListener('keydown', function (event) {
-      _this.downkeys.add(event.keyCode);
-    });
-    this.body.addEventListener('keyup', function (event) {
-      _this.downkeys.delete(event.keyCode);
-    });
-
-    // Set up mouse dragging
-    var handleMouseMove = function handleMouseMove(_ref) {
-      var clientX = _ref.clientX,
-          clientY = _ref.clientY;
-
-      _this.mousePosition = new _pair2.default(clientX, clientY);
-      var mouseDelta = _this.mouseDownPosition.delta(_this.mousePosition);
-      _this.eachDragObject(function (mdo) {
-        mdo.position = mdo.mouseDownPosition.offset(mouseDelta);
-      });
-    };
-    this.body.addEventListener('mousedown', function (_ref2) {
-      var clientX = _ref2.clientX,
-          clientY = _ref2.clientY;
-
-      _this.body.addEventListener('mousemove', handleMouseMove);
-      _this.mouseDownPosition = new _pair2.default(clientX, clientY);
-      _this.eachDragObject(function (mdo) {
-        mdo.mouseDownPosition = mdo.position;
-      });
-    });
-    this.body.addEventListener('mouseup', function (_ref3) {
-      var clientX = _ref3.clientX,
-          clientY = _ref3.clientY;
-
-      _this.body.removeEventListener('mousemove', handleMouseMove);
-      _this.mouseDownPosition = new _pair2.default(clientX, clientY);
-      _this.mouseDelta = new _pair2.default();
-    });
+    this.setUpCanvas();
+    this.setUpEngineActions();
+    this.createActions();
+    this.setUpInputEventHandling();
   }
 
   _createClass(_class, [{
+    key: 'setUpCanvas',
+    value: function setUpCanvas() {
+      // Get body reference
+      this.body = document.getElementsByTagName('body')[0];
+
+      // Get or create canvas
+      if (!this.canvas) {
+        this.canvas = document.getElementsByTagName('canvas')[0];
+        if (!this.canvas) {
+          this.canvas = document.createElement('canvas');
+        }
+        this.body.appendChild(this.canvas);
+      }
+
+      // Create context
+      if (!this.context) {
+        this.context = this.canvas.getContext('2d');
+      }
+
+      // Set focus to canvas
+      this.canvas.focus();
+    }
+  }, {
+    key: 'setUpEngineActions',
+    value: function setUpEngineActions() {
+      var _this = this;
+
+      // Set up engine and object actions
+      this.engineActions = [];
+      this.objectActions = ['update', 'draw'];
+      this.engineObjects.forEach(function (engineObject) {
+        engineObject.engine = _this;
+      });
+    }
+  }, {
+    key: 'createActions',
+    value: function createActions() {
+      var _this2 = this;
+
+      // Action for updating framecount
+      this.frameCount = 0;
+      this.engineActions.push(function () {
+        _this2.frameCount++;
+      });
+
+      // Action for keeping track of viewport size
+      this.engineActions.push(function () {
+        _this2.width = innerWidth;
+        _this2.height = innerHeight;
+      });
+
+      // Action for updating canvas to fill viewport
+      this.engineActions.push(function () {
+        _this2.canvas.width = _this2.width;
+        _this2.canvas.height = _this2.height;
+      });
+
+      // Action for clearing background
+      this.engineActions.push(function () {
+        _this2.context.fillStyle = _this2.backgroundColor;
+        _this2.context.fillRect(0, 0, _this2.width, _this2.height);
+      });
+    }
+  }, {
+    key: 'setUpInputEventHandling',
+    value: function setUpInputEventHandling() {
+      // this.setUpKeyEventManagement();
+      this.setUpMouseDragging();
+      this.setUpMouseTracking();
+    }
+  }, {
+    key: 'setUpKeyEventManagement',
+    value: function setUpKeyEventManagement() {
+      var _this3 = this;
+
+      this.downkeys = new Set();
+      this.body.addEventListener('keydown', function (event) {
+        _this3.downkeys.add(event.keyCode);
+      });
+      this.body.addEventListener('keyup', function (event) {
+        _this3.downkeys.delete(event.keyCode);
+      });
+    }
+  }, {
+    key: 'setUpMouseDragging',
+    value: function setUpMouseDragging() {
+      var _this4 = this;
+
+      var handleMouseMove = function handleMouseMove(_ref) {
+        var clientX = _ref.clientX,
+            clientY = _ref.clientY;
+
+        var mousePosition = new _pair2.default(clientX, clientY);
+        var mouseDelta = _this4.mouseDownPosition.delta(mousePosition);
+        _this4.eachDragObject(function (mdo) {
+          mdo.position = mdo.mouseDownPosition.offset(mouseDelta);
+        });
+      };
+
+      this.body.addEventListener('mousedown', function (_ref2) {
+        var clientX = _ref2.clientX,
+            clientY = _ref2.clientY;
+
+        _this4.body.addEventListener('mousemove', handleMouseMove);
+        _this4.mouseDownPosition = new _pair2.default(clientX, clientY);
+        _this4.eachDragObject(function (mdo) {
+          mdo.mouseDownPosition = mdo.position;
+        });
+      });
+
+      this.body.addEventListener('mouseup', function (_ref3) {
+        var clientX = _ref3.clientX,
+            clientY = _ref3.clientY;
+
+        _this4.body.removeEventListener('mousemove', handleMouseMove);
+        _this4.mouseDownPosition = new _pair2.default(clientX, clientY);
+        _this4.mouseDelta = new _pair2.default();
+      });
+    }
+  }, {
+    key: 'setUpMouseTracking',
+    value: function setUpMouseTracking() {
+      var _this5 = this;
+
+      this.mousePosition = new _pair2.default(0, 0);
+      this.body.addEventListener('mousemove', function (_ref4) {
+        var clientX = _ref4.clientX,
+            clientY = _ref4.clientY;
+
+        _this5.mousePosition = new _pair2.default(clientX, clientY);
+      });
+    }
+  }, {
     key: 'registerEngineObject',
     value: function registerEngineObject(engineObject) {
       this.engineObjects.add(engineObject);
@@ -389,10 +451,10 @@ var _class = function () {
   }, {
     key: 'dispatchObjectActions',
     value: function dispatchObjectActions() {
-      var _this2 = this;
+      var _this6 = this;
 
       this.objectActions.forEach(function (action) {
-        _this2.engineObjects.forEach(function (engineObject) {
+        _this6.engineObjects.forEach(function (engineObject) {
           return engineObject[action]();
         });
       });
@@ -414,11 +476,11 @@ var _class = function () {
   }, {
     key: 'run',
     value: function run(frameRate) {
-      var _this3 = this;
+      var _this7 = this;
 
       this.loop = setInterval(function () {
-        _this3.dispatchEngineActions();
-        _this3.dispatchObjectActions();
+        _this7.dispatchEngineActions();
+        _this7.dispatchObjectActions();
       }, 1000 / (frameRate || this.frameRate));
     }
   }, {
@@ -570,6 +632,10 @@ var _mouse_drag_object = __webpack_require__(7);
 
 var _mouse_drag_object2 = _interopRequireDefault(_mouse_drag_object);
 
+var _engine_object = __webpack_require__(1);
+
+var _engine_object2 = _interopRequireDefault(_engine_object);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -580,8 +646,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _class = function (_MouseDragObject) {
-  _inherits(_class, _MouseDragObject);
+var _class = function (_EngineObject) {
+  _inherits(_class, _EngineObject);
 
   function _class(options) {
     _classCallCheck(this, _class);
@@ -616,8 +682,18 @@ var _class = function (_MouseDragObject) {
   }, {
     key: 'update',
     value: function update() {
-      var engine = this.engine;
-      if (!(engine.frameCount % Math.floor(engine.frameRate / this.grid.stepRate))) {
+      var _engine = this.engine,
+          frameCount = _engine.frameCount,
+          frameRate = _engine.frameRate,
+          mousePosition = _engine.mousePosition;
+
+
+      this.hovered = false;
+      if (mousePosition.withinCorners(this.position, this.position.offset(this.size))) {
+        this.hovered = true;
+      }
+
+      if (frameCount % Math.floor(frameRate / this.grid.stepRate) !== 0) {
         return;
       }
 
@@ -628,18 +704,26 @@ var _class = function (_MouseDragObject) {
       this.alive = this.willLive;
       if (this.alive) {
         if ([2, 3].includes(neighborCount)) {
-          this.color = 'Black';
+          this.color = '#8D23B2';
+          // this.color = '#2CB27A';
+          // this.color = '#1DCC1B';
           this.willLive = true;
         } else {
-          this.color = 'Gray';
+          this.color = '#D14CFF';
+          // this.color = '#28CC87';
+          // this.color = '#FF573B';
           this.willLive = false;
         }
       } else {
         if (neighborCount === 3) {
-          this.color = 'LightGray';
+          this.color = '#28CC87';
+          // this.color = '#D14CFF';
+          // this.color = '#7BFF9F';
           this.willLive = true;
         } else {
-          this.color = 'White';
+          this.color = '#2CB27A';
+          // this.color = '#FFCF65';
+          // this.color = '#CC681B';
           this.willLive = false;
         }
       }
@@ -650,13 +734,20 @@ var _class = function (_MouseDragObject) {
     key: 'draw',
     value: function draw() {
       var context = this.engine.context;
+
       context.fillStyle = this.color;
       context.fillRect.apply(context, _toConsumableArray(this.position.pair).concat(_toConsumableArray(this.size.pair)));
+
+      if (this.hovered) {
+        context.lineWidth = 1;
+        context.strokeStyle = 'White';
+        context.strokeRect.apply(context, _toConsumableArray(this.position.pair).concat(_toConsumableArray(this.size.pair)));
+      }
     }
   }]);
 
   return _class;
-}(_mouse_drag_object2.default);
+}(_engine_object2.default);
 
 exports.default = _class;
 

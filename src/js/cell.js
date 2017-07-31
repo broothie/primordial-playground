@@ -1,7 +1,8 @@
 import Pair from './engine/pair';
 import MouseDragObject from './engine/mouse_drag_object';
+import EngineObject from './engine/engine_object';
 
-export default class extends MouseDragObject {
+export default class extends EngineObject {
   constructor(options) {
     super(Object.assign({
       grid: null,
@@ -26,8 +27,17 @@ export default class extends MouseDragObject {
   }
 
   update() {
-    const engine = this.engine;
-    if (!(engine.frameCount % Math.floor(engine.frameRate / this.grid.stepRate))) {
+    const { frameCount, frameRate, mousePosition } = this.engine;
+
+    this.hovered = false;
+    if (mousePosition.withinCorners(
+      this.position,
+      this.position.offset(this.size)
+    )) {
+      this.hovered = true;
+    }
+
+    if ((frameCount % Math.floor(frameRate / this.grid.stepRate)) !== 0) {
       return;
     }
 
@@ -38,18 +48,26 @@ export default class extends MouseDragObject {
     this.alive = this.willLive;
     if (this.alive) {
       if ([2, 3].includes(neighborCount)) {
-        this.color = 'Black';
+        this.color = '#8D23B2';
+        // this.color = '#2CB27A';
+        // this.color = '#1DCC1B';
         this.willLive = true;
       } else {
-        this.color = 'Gray';
+        this.color = '#D14CFF';
+        // this.color = '#28CC87';
+        // this.color = '#FF573B';
         this.willLive = false;
       }
     } else {
       if (neighborCount === 3) {
-        this.color = 'LightGray';
+        this.color = '#28CC87';
+        // this.color = '#D14CFF';
+        // this.color = '#7BFF9F';
         this.willLive = true;
       } else {
-        this.color = 'White';
+        this.color = '#2CB27A';
+        // this.color = '#FFCF65';
+        // this.color = '#CC681B';
         this.willLive = false;
       }
     }
@@ -59,7 +77,14 @@ export default class extends MouseDragObject {
 
   draw() {
     const context = this.engine.context;
+
     context.fillStyle = this.color;
     context.fillRect(...this.position.pair, ...this.size.pair);
+
+    if (this.hovered) {
+      context.lineWidth = 1;
+      context.strokeStyle = 'White';
+      context.strokeRect(...this.position.pair, ...this.size.pair);
+    }
   }
 }

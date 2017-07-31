@@ -11,6 +11,13 @@ export default class {
       backgroundColor: 'White'
     }, options);
 
+    this.setUpCanvas();
+    this.setUpEngineActions();
+    this.createActions();
+    this.setUpInputEventHandling();
+  }
+
+  setUpCanvas() {
     // Get body reference
     this.body = document.getElementsByTagName('body')[0];
 
@@ -30,13 +37,16 @@ export default class {
 
     // Set focus to canvas
     this.canvas.focus();
+  }
 
+  setUpEngineActions() {
     // Set up engine and object actions
     this.engineActions = [];
     this.objectActions = ['update', 'draw'];
-
     this.engineObjects.forEach(engineObject => { engineObject.engine = this; });
+  }
 
+  createActions() {
     // Action for updating framecount
     this.frameCount = 0;
     this.engineActions.push(() => {
@@ -60,8 +70,15 @@ export default class {
       this.context.fillStyle = this.backgroundColor;
       this.context.fillRect(0, 0, this.width, this.height);
     });
+  }
 
-    // Set up key status tracking
+  setUpInputEventHandling() {
+    // this.setUpKeyEventManagement();
+    this.setUpMouseDragging();
+    this.setUpMouseTracking();
+  }
+
+  setUpKeyEventManagement() {
     this.downkeys = new Set;
     this.body.addEventListener('keydown', event => {
       this.downkeys.add(event.keyCode);
@@ -69,15 +86,17 @@ export default class {
     this.body.addEventListener('keyup', event => {
       this.downkeys.delete(event.keyCode);
     });
+  }
 
-    // Set up mouse dragging
+  setUpMouseDragging() {
     const handleMouseMove = ({ clientX, clientY }) => {
-      this.mousePosition = new Pair(clientX, clientY);
-      const mouseDelta = this.mouseDownPosition.delta(this.mousePosition);
+      const mousePosition = new Pair(clientX, clientY);
+      const mouseDelta = this.mouseDownPosition.delta(mousePosition);
       this.eachDragObject(mdo => {
         mdo.position = mdo.mouseDownPosition.offset(mouseDelta);
       });
     };
+
     this.body.addEventListener('mousedown', ({ clientX, clientY }) => {
       this.body.addEventListener('mousemove', handleMouseMove);
       this.mouseDownPosition = new Pair(clientX, clientY);
@@ -85,10 +104,18 @@ export default class {
         mdo.mouseDownPosition = mdo.position;
       });
     });
+
     this.body.addEventListener('mouseup', ({ clientX, clientY }) => {
       this.body.removeEventListener('mousemove', handleMouseMove);
       this.mouseDownPosition = new Pair(clientX, clientY);
       this.mouseDelta = new Pair;
+    });
+  }
+
+  setUpMouseTracking() {
+    this.mousePosition = new Pair(0, 0);
+    this.body.addEventListener('mousemove', ({ clientX, clientY }) => {
+      this.mousePosition = new Pair(clientX, clientY);
     });
   }
 

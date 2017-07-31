@@ -76,8 +76,7 @@ html, body {
   font-family: Monaco, monospace;
   font-size: 12px; }
   html, html canvas, body, body canvas {
-    overflow: hidden;
-    cursor: move; }
+    overflow: hidden; }
   html section, body section {
     position: fixed;
     left: 15px;
@@ -86,7 +85,7 @@ html, body {
     padding: 15px 20px;
     border: 1px solid WhiteSmoke;
     background-color: White;
-    opacity: 0.983;
+    opacity: 0.9;
     cursor: default; }
     html section h1, body section h1 {
       font-size: 24px; }

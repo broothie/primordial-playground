@@ -13,9 +13,8 @@ html, body {
 
   &, canvas {
     overflow: hidden;
-    cursor: move;
+    // cursor: move;
   }
-
 
   section {
     position: fixed;
@@ -28,7 +27,7 @@ html, body {
     border: 1px solid WhiteSmoke;
 
     background-color: White;
-    opacity: 0.983;
+    opacity: 0.9;
 
     cursor: default;
 
