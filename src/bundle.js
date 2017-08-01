@@ -267,6 +267,8 @@ var _class = function () {
 
       this.grid = grid;
       this.cells = this.grid.flatten();
+
+      this.generatation = 0;
     }
   }, {
     key: 'seed',
@@ -309,25 +311,23 @@ var _class = function () {
   }, {
     key: 'update',
     value: function update() {
-      var _this2 = this;
-
-      this.population = 0;
       this.cells.forEach(function (cell) {
         cell.update();
-        if (cell.alive) _this2.population++;
       });
       this.generation++;
     }
   }, {
     key: 'draw',
     value: function draw() {
-      var _this3 = this;
+      var _this2 = this;
 
       this.canvas.width = window.innerWidth;
       this.canvas.height = window.innerHeight;
 
+      this.population = 0;
       this.cells.forEach(function (cell) {
-        return cell.draw(_this3.context);
+        cell.draw(_this2.context);
+        if (cell.alive) _this2.population++;
       });
 
       this.iface.draw();
@@ -363,8 +363,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var _class = function () {
   function _class(sim, options) {
-    var _this = this;
-
     _classCallCheck(this, _class);
 
     this.sim = sim;
@@ -379,21 +377,85 @@ var _class = function () {
       alive: '#8D23B2'
     }, options);
 
-    this.stepRateSlider = document.getElementById('stepRateSlider');
-    this.stepRateSlider.setAttribute('max', this.sim.loopRate);
-    this.stepRateSlider.value = this.sim.stepRate;
-    this.stepRateSlider.addEventListener('input', function (event) {
-      document.getElementById('stepRate').innerText = _this.stepRateSlider.value;
-      _this.sim.stepRate = parseInt(_this.stepRateSlider.value);
-    });
-
-    this.populationCount = document.getElementById('population-count');
-    this.generationCount = document.getElementById('generation-count');
+    this.setUpStepRateSlider();
+    this.setUpStepControls();
+    this.setUpHud();
   }
 
   _createClass(_class, [{
+    key: 'setUpStepRateSlider',
+    value: function setUpStepRateSlider() {
+      var _this = this;
+
+      this.stepRateSlider = document.getElementById('stepRateSlider');
+      this.stepRateSlider.setAttribute('max', this.sim.loopRate);
+      this.stepRateSlider.value = this.sim.stepRate;
+      this.stepRateSlider.addEventListener('input', function (event) {
+        document.getElementById('stepRate').innerText = _this.stepRateSlider.value;
+        _this.sim.stepRate = parseInt(_this.stepRateSlider.value);
+      });
+    }
+  }, {
+    key: 'setUpStepControls',
+    value: function setUpStepControls() {
+      var _this2 = this;
+
+      ['pause', 'play', 'step', 'clear', 'seed'].forEach(function (buttonName) {
+        _this2[buttonName + 'Button'] = document.getElementById(buttonName);
+      });
+
+      ['play', 'seed'].forEach(function (buttonName) {
+        _this2[buttonName + 'Button'].style.display = 'none';
+      });
+
+      this.stepButton.classList.add('button-disabled');
+
+      var stepButtonClickHandler = function stepButtonClickHandler() {
+        _this2.sim.update();
+      };
+
+      this.pauseButton.addEventListener('click', function () {
+        _this2.sim.paused = true;
+        _this2.pauseButton.style.display = 'none';
+        _this2.playButton.style.display = 'block';
+        _this2.stepButton.classList.remove('button-disabled');
+        _this2.stepButton.addEventListener('click', stepButtonClickHandler);
+      });
+
+      this.playButton.addEventListener('click', function () {
+        _this2.sim.paused = false;
+        _this2.playButton.style.display = 'none';
+        _this2.pauseButton.style.display = 'block';
+        _this2.stepButton.classList.add('button-disabled');
+        _this2.stepButton.removeEventListener('click', stepButtonClickHandler);
+      });
+
+      this.clearButton.addEventListener('click', function () {
+        _this2.sim.generateGrid();
+      });
+
+      this.seedButton.addEventListener('click', function () {
+        _this2.sim.seed();
+        _this2.sim.update();
+      });
+    }
+  }, {
+    key: 'setUpHud',
+    value: function setUpHud() {
+      this.populationCount = document.getElementById('population-count');
+      this.generationCount = document.getElementById('generation-count');
+    }
+  }, {
     key: 'draw',
     value: function draw() {
+      if (this.sim.population === 0) {
+        this.clearButton.style.display = 'none';
+        this.seedButton.style.display = 'block';
+      } else {
+        this.seedButton.style.display = 'none';
+        this.clearButton.style.display = 'block';
+      }
+
       this.populationCount.innerText = this.sim.population;
       this.generationCount.innerText = this.sim.generation;
     }

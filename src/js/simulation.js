@@ -50,6 +50,8 @@ export default class {
 
     this.grid = grid;
     this.cells = this.grid.flatten();
+
+    this.generatation = 0;
   }
 
   seed() {
@@ -82,10 +84,8 @@ export default class {
 
 
   update() {
-    this.population = 0;
     this.cells.forEach(cell => {
       cell.update();
-      if (cell.alive) this.population++;
     });
     this.generation++;
   }
@@ -94,7 +94,11 @@ export default class {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
 
-    this.cells.forEach(cell => cell.draw(this.context));
+    this.population = 0;
+    this.cells.forEach(cell => {
+      cell.draw(this.context);
+      if (cell.alive) this.population++;
+    });
 
     this.iface.draw();
 
