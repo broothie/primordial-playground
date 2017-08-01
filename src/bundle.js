@@ -222,7 +222,6 @@ var _class = function () {
 
     this.canvas = canvas;
     this.context = canvas.getContext('2d');
-    this.iface = new _interface2.default(this);
 
     Object.assign(this, {
       loopRate: 1000,
@@ -236,6 +235,8 @@ var _class = function () {
       width: Math.ceil(window.innerWidth / 10),
       height: Math.ceil(window.innerHeight / 10)
     }, options);
+
+    this.iface = new _interface2.default(this);
 
     this.generateGrid();
     this.seed();
@@ -379,6 +380,7 @@ var _class = function () {
     }, options);
 
     this.stepRateSlider = document.getElementById('stepRateSlider');
+    this.stepRateSlider.setAttribute('max', this.sim.loopRate);
     this.stepRateSlider.value = this.sim.stepRate;
     this.stepRateSlider.addEventListener('input', function (event) {
       document.getElementById('stepRate').innerText = _this.stepRateSlider.value;

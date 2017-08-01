@@ -13,6 +13,7 @@ export default class {
     }, options);
 
     this.stepRateSlider = document.getElementById('stepRateSlider');
+    this.stepRateSlider.setAttribute('max', this.sim.loopRate);
     this.stepRateSlider.value = this.sim.stepRate;
     this.stepRateSlider.addEventListener('input', event => {
       document.getElementById('stepRate').innerText = this.stepRateSlider.value;

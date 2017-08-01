@@ -5,7 +5,6 @@ export default class {
   constructor(canvas, options) {
     this.canvas = canvas;
     this.context = canvas.getContext('2d');
-    this.iface = new Interface(this);
 
     Object.assign(this, {
       loopRate: 1000,
@@ -19,6 +18,8 @@ export default class {
       width: Math.ceil(window.innerWidth / 10),
       height: Math.ceil(window.innerHeight / 10),
     }, options);
+
+    this.iface = new Interface(this);
 
     this.generateGrid();
     this.seed();
