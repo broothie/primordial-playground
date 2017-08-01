@@ -1,0 +1,106 @@
+import Interface from './interface';
+import Cell from './cell';
+
+export default class {
+  constructor(canvas, options) {
+    this.canvas = canvas;
+    this.context = canvas.getContext('2d');
+    this.iface = new Interface(this);
+
+    Object.assign(this, {
+      loopRate: 1000,
+      stepRate: 12,
+      frameRate: 60,
+
+      paused: false,
+
+      seedRatio: 0.3,
+
+      width: Math.ceil(window.innerWidth / 10),
+      height: Math.ceil(window.innerHeight / 10),
+    }, options);
+
+    this.generateGrid();
+    this.seed();
+  }
+
+  generateGrid() {
+    const grid = [];
+    for (let i = 0; i < this.height; i++) {
+      const row = [];
+      for (let j = 0; j < this.width; j++) {
+        row.push(new Cell(this.iface, { x: j, y: i }));
+      }
+      grid.push(row);
+    }
+
+    for (let i = 0; i < this.height; i++) {
+      for (let j = 0; j < this.width; j++) {
+        for (let k = -1; k <= 1; k++) {
+          for (let l = -1; l <= 1; l++) {
+            if (k === 0 && l === 0) continue;
+            grid[i][j].neighbors.push(
+              grid[(i + k).mod(this.height)][(j + l).mod(this.width)]
+            );
+          }
+        }
+      }
+    }
+
+    this.grid = grid;
+    this.cells = this.grid.flatten();
+  }
+
+  seed() {
+    this.cells.forEach(cell => {
+      cell.alive = Math.random() < this.seedRatio;
+    });
+  }
+
+  run() {
+    this.loopCount = 0;
+    this.generation = 0;
+    this.frameCount = 0;
+
+    this.loopId = setInterval(this.loop.bind(this), 1000 / this.loopRate);
+  }
+
+  loop() {
+    const { loopCount, loopRate, stepRate, frameRate, paused } = this;
+
+    if (loopCount % Math.floor(loopRate / stepRate) === 0) {
+      if (!paused) this.update();
+    }
+
+    if (loopCount % Math.floor(loopRate / frameRate) === 0) {
+      this.draw();
+    }
+
+    this.loopCount++;
+  }
+
+
+  update() {
+    this.population = 0;
+    this.cells.forEach(cell => {
+      cell.update();
+      if (cell.alive) this.population++;
+    });
+    this.generation++;
+  }
+
+  draw() {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+
+    this.cells.forEach(cell => cell.draw(this.context));
+
+    this.iface.draw();
+
+    this.frameCount++;
+  }
+
+  kill() {
+    clearInterval(this.loopId);
+  }
+}

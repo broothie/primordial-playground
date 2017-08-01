@@ -1,8 +1,8 @@
 import './patch';
-import Pair from './engine/pair';
-import Engine from './engine/engine';
-import Grid from './grid';
+import Simulation from './simulation';
 
 document.addEventListener('DOMContentLoaded', () => {
-  new Engine({ engineObjects: new Grid().asSet() }).run();
+  const canvas = document.createElement('canvas');
+  document.getElementsByTagName('body')[0].appendChild(canvas);
+  new Simulation(canvas).run();
 });

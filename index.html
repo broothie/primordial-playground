@@ -7,7 +7,7 @@
     <title>Conway's Game of Life</title>
   </head>
   <body>
-    <section>
+    <section class='info'>
       <h1><a href="index.html">Conway's Game of Life</a></h1>
 
       <article>
@@ -25,6 +25,36 @@
         Check it out on
         <a href="https://github.com/boothandrewd/conways-gol/#readme">GitHub</a>.
       </article>
+    </section>
+
+    <section class='controls'>
+      <form>
+        <fieldset>
+
+        </fieldset>
+
+        <fieldset>
+
+        </fieldset>
+
+        <div class='step-rate'>
+          <label for="stepRate">Step Rate: <span id="stepRate">12</span></label>
+          <input id="stepRateSlider" type="range" value="12" min="1" max="1000"/>
+        </div>
+
+        <hr/>
+      </form>
+
+      <footer class='stats'>
+        <div>
+          <span>
+            <p>Population:</p><span id='population-count'></span>
+          </span>
+          <span>
+            <p>Generation:</p><span id='generation-count'>0</span>
+          </span>
+        </div>
+      </footer>
     </section>
   </body>
 </html>

@@ -13,43 +13,28 @@ html, body {
 
   &, canvas {
     overflow: hidden;
-    // cursor: move;
   }
 
-  section {
-    position: fixed;
+  a {
+    color: Blue;
 
-    left: 15px;
-    top: 15px;
-    width: 320px;
-
-    padding: 15px 20px;
-    border: 1px solid WhiteSmoke;
-
-    background-color: White;
-    opacity: 0.9;
-
-    cursor: default;
-
-    h1 {
-      font-size: 24px;
-    }
-
-    article {
-      margin-top: 10px;
-      display: none;
-
-      a {
-        color: Blue;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
-
-    &:hover article {
-      display: block;
+    &:hover {
+      text-decoration: underline;
     }
   }
 }
+
+@mixin overlay {
+  position: fixed;
+
+  padding: 15px 20px;
+  border: 1px solid WhiteSmoke;
+
+  background-color: White;
+  opacity: 0.9;
+
+  cursor: default;
+}
+
+@import 'info.scss';
+@import 'controls.scss';

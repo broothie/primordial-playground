@@ -1,0 +1,56 @@
+
+.controls {
+  @include overlay;
+
+  right: 15px;
+  bottom: 15px;
+
+  footer {
+    width: 110px;
+
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+
+    div {
+      width: 110px;
+
+      span {
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+    }
+  }
+
+  form {
+    display: none;
+
+    margin-bottom: 10px;
+
+    hr {
+      margin: 10px 0;
+      border: 1px solid WhiteSmoke;
+    }
+  }
+
+  &:hover {
+    width: 250px;
+
+    form {
+      display: block;
+    }
+
+    footer {
+      width: 100%;
+    }
+  }
+}
+
+.step-rate {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+}

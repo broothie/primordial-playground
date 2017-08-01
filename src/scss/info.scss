@@ -1,0 +1,23 @@
+.info {
+  @include overlay;
+  left: 15px;
+  top: 15px;
+  width: 320px;
+
+  h1 {
+    font-size: 24px;
+
+    a {
+      color: black;
+    }
+  }
+
+  article {
+    margin-top: 10px;
+    display: none;
+  }
+
+  &:hover article {
+    display: block;
+  }
+}

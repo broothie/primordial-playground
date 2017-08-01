@@ -77,26 +77,69 @@ html, body {
   font-size: 12px; }
   html, html canvas, body, body canvas {
     overflow: hidden; }
-  html section, body section {
-    position: fixed;
-    left: 15px;
-    top: 15px;
-    width: 320px;
-    padding: 15px 20px;
-    border: 1px solid WhiteSmoke;
-    background-color: White;
-    opacity: 0.9;
-    cursor: default; }
-    html section h1, body section h1 {
-      font-size: 24px; }
-    html section article, body section article {
-      margin-top: 10px;
-      display: none; }
-      html section article a, body section article a {
-        color: Blue; }
-        html section article a:hover, body section article a:hover {
-          text-decoration: underline; }
-    html section:hover article, body section:hover article {
+  html a, body a {
+    color: Blue; }
+    html a:hover, body a:hover {
+      text-decoration: underline; }
+
+.info {
+  position: fixed;
+  padding: 15px 20px;
+  border: 1px solid WhiteSmoke;
+  background-color: White;
+  opacity: 0.9;
+  cursor: default;
+  left: 15px;
+  top: 15px;
+  width: 320px; }
+  .info h1 {
+    font-size: 24px; }
+    .info h1 a {
+      color: black; }
+  .info article {
+    margin-top: 10px;
+    display: none; }
+  .info:hover article {
+    display: block; }
+
+.controls {
+  position: fixed;
+  padding: 15px 20px;
+  border: 1px solid WhiteSmoke;
+  background-color: White;
+  opacity: 0.9;
+  cursor: default;
+  right: 15px;
+  bottom: 15px; }
+  .controls footer {
+    width: 110px;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-end;
+    align-items: flex-end; }
+    .controls footer div {
+      width: 110px; }
+      .controls footer div span {
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+        align-items: baseline; }
+  .controls form {
+    display: none;
+    margin-bottom: 10px; }
+    .controls form hr {
+      margin: 10px 0;
+      border: 1px solid WhiteSmoke; }
+  .controls:hover {
+    width: 250px; }
+    .controls:hover form {
       display: block; }
+    .controls:hover footer {
+      width: 100%; }
+
+.step-rate {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between; }
 
 /*# sourceMappingURL=bundle.css.map */
