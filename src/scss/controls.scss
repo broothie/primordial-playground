@@ -35,19 +35,22 @@
   display: flex;
   flex-flow: row;
   justify-content: space-between;
+}
 
-  div {
+.stats {
+  flex: 1;
 
-    span {
-      display: flex;
-      flex-flow: row;
-      justify-content: space-between;
-      align-items: baseline;
-    }
+  span {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: baseline;
   }
 }
 
 .step-controls {
+  margin-right: 20px;
+
   display: flex;
   flex-flow: row;
   justify-content: space-around;

@@ -129,59 +129,92 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var _class = function () {
-  function _class(iface, options) {
+  function _class(sim, options) {
     _classCallCheck(this, _class);
 
-    this.iface = iface;
+    this.sim = sim;
 
     Object.assign(this, {
       x: 0,
       y: 0,
       size: 10,
-      color: this.iface.dead,
+      color: this.sim.iface.dead,
       alive: false,
       neighbors: []
     }, options);
+
+    this.displayX = this.x * this.size;
+    this.displayY = this.y * this.size;
 
     this.willLive = false;
   }
 
   _createClass(_class, [{
-    key: "update",
+    key: 'update',
     value: function update() {
-      var iface = this.iface;
+      var clickUpdate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+      var iface = this.sim.iface;
       var aliveNeighbors = this.neighbors.filter(function (cell) {
         return cell.alive;
       }).length;
 
-      this.alive = this.willLive;
+      if (!clickUpdate) {
+        this.alive = this.willLive;
+      }
+
       if (this.alive) {
         if (iface.lifeCounts.includes(aliveNeighbors)) {
           // Survive
           this.willLive = true;
-          this.color = iface.alive;
         } else {
           // Die
           this.willLive = false;
-          this.color = iface.dying;
         }
       } else {
         if (iface.birthCounts.includes(aliveNeighbors)) {
           // Birth
           this.willLive = true;
-          this.color = iface.birth;
         } else {
           // Dead
           this.willLive = false;
-          this.color = iface.dead;
         }
       }
     }
   }, {
-    key: "draw",
-    value: function draw(context) {
+    key: 'draw',
+    value: function draw() {
+      var displayX = this.displayX,
+          displayY = this.displayY,
+          size = this.size,
+          _sim = this.sim,
+          context = _sim.context,
+          iface = _sim.iface;
+
+
+      if (this.alive) {
+        if (this.willLive) {
+          this.color = iface.alive;
+        } else {
+          this.color = iface.dying;
+        }
+      } else {
+        if (this.willLive) {
+          this.color = iface.birth;
+        } else {
+          this.color = iface.dead;
+        }
+      }
+
+      this.hovered = displayX <= iface.mouseX && iface.mouseX < displayX + size && displayY <= iface.mouseY && iface.mouseY < displayY + size;
+
+      if (this.hovered) {
+        context.fillStyle = 'white';
+        context.fillRect(displayX, displayY, size, size);
+      }
+
       context.fillStyle = this.color;
-      context.fillRect(this.x * this.size, this.y * this.size, this.size, this.size);
+      context.fillRect(displayX + (this.hovered ? 1 : 0), displayY + (this.hovered ? 1 : 0), size - (this.hovered ? 2 : 0), size - (this.hovered ? 2 : 0));
     }
   }]);
 
@@ -249,7 +282,7 @@ var _class = function () {
       for (var i = 0; i < this.height; i++) {
         var row = [];
         for (var j = 0; j < this.width; j++) {
-          row.push(new _cell2.default(this.iface, { x: j, y: i }));
+          row.push(new _cell2.default(this, { x: j, y: i }));
         }
         grid.push(row);
       }
@@ -311,10 +344,12 @@ var _class = function () {
   }, {
     key: 'update',
     value: function update() {
+      var clickUpdate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
       this.cells.forEach(function (cell) {
-        cell.update();
+        cell.update(clickUpdate);
       });
-      this.generation++;
+      if (!this.paused) this.generation++;
     }
   }, {
     key: 'draw',
@@ -326,7 +361,7 @@ var _class = function () {
 
       this.population = 0;
       this.cells.forEach(function (cell) {
-        cell.draw(_this2.context);
+        cell.draw();
         if (cell.alive) _this2.population++;
       });
 
@@ -377,66 +412,92 @@ var _class = function () {
       alive: '#8D23B2'
     }, options);
 
+    this.canvasClicked = false;
+
+    this.setUpMouseTracking();
     this.setUpStepRateSlider();
     this.setUpStepControls();
     this.setUpHud();
   }
 
   _createClass(_class, [{
+    key: 'setUpMouseTracking',
+    value: function setUpMouseTracking() {
+      var _this = this;
+
+      this.sim.canvas.addEventListener('mousemove', function (_ref) {
+        var clientX = _ref.clientX,
+            clientY = _ref.clientY;
+
+        _this.mouseX = clientX;
+        _this.mouseY = clientY;
+      });
+
+      this.sim.canvas.addEventListener('click', function () {
+        var hoveredCell = _this.sim.cells.filter(function (cell) {
+          return cell.hovered;
+        })[0];
+        hoveredCell.alive = !hoveredCell.alive;
+        [hoveredCell].concat(hoveredCell.neighbors).forEach(function (cell) {
+          cell.update(true);
+        });
+      });
+    }
+  }, {
     key: 'setUpStepRateSlider',
     value: function setUpStepRateSlider() {
-      var _this = this;
+      var _this2 = this;
 
       this.stepRateSlider = document.getElementById('stepRateSlider');
       this.stepRateSlider.setAttribute('max', this.sim.loopRate);
       this.stepRateSlider.value = this.sim.stepRate;
       this.stepRateSlider.addEventListener('input', function (event) {
-        document.getElementById('stepRate').innerText = _this.stepRateSlider.value;
-        _this.sim.stepRate = parseInt(_this.stepRateSlider.value);
+        document.getElementById('stepRate').innerText = _this2.stepRateSlider.value;
+        _this2.sim.stepRate = parseInt(_this2.stepRateSlider.value);
       });
     }
   }, {
     key: 'setUpStepControls',
     value: function setUpStepControls() {
-      var _this2 = this;
+      var _this3 = this;
 
       ['pause', 'play', 'step', 'clear', 'seed'].forEach(function (buttonName) {
-        _this2[buttonName + 'Button'] = document.getElementById(buttonName);
+        _this3[buttonName + 'Button'] = document.getElementById(buttonName);
       });
 
       ['play', 'seed'].forEach(function (buttonName) {
-        _this2[buttonName + 'Button'].style.display = 'none';
+        _this3[buttonName + 'Button'].style.display = 'none';
       });
 
       this.stepButton.classList.add('button-disabled');
 
       var stepButtonClickHandler = function stepButtonClickHandler() {
-        _this2.sim.update();
+        _this3.sim.update();
       };
 
       this.pauseButton.addEventListener('click', function () {
-        _this2.sim.paused = true;
-        _this2.pauseButton.style.display = 'none';
-        _this2.playButton.style.display = 'block';
-        _this2.stepButton.classList.remove('button-disabled');
-        _this2.stepButton.addEventListener('click', stepButtonClickHandler);
+        _this3.sim.paused = true;
+        _this3.pauseButton.style.display = 'none';
+        _this3.playButton.style.display = 'block';
+        _this3.stepButton.classList.remove('button-disabled');
+        _this3.stepButton.addEventListener('click', stepButtonClickHandler);
       });
 
       this.playButton.addEventListener('click', function () {
-        _this2.sim.paused = false;
-        _this2.playButton.style.display = 'none';
-        _this2.pauseButton.style.display = 'block';
-        _this2.stepButton.classList.add('button-disabled');
-        _this2.stepButton.removeEventListener('click', stepButtonClickHandler);
+        _this3.sim.paused = false;
+        _this3.playButton.style.display = 'none';
+        _this3.pauseButton.style.display = 'block';
+        _this3.stepButton.classList.add('button-disabled');
+        _this3.stepButton.removeEventListener('click', stepButtonClickHandler);
       });
 
       this.clearButton.addEventListener('click', function () {
-        _this2.sim.generateGrid();
+        _this3.sim.generateGrid();
       });
 
       this.seedButton.addEventListener('click', function () {
-        _this2.sim.seed();
-        _this2.sim.update();
+        _this3.sim.seed();
+        _this3.sim.update();
       });
     }
   }, {

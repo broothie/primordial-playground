@@ -12,10 +12,27 @@ export default class {
       alive: '#8D23B2',
     }, options);
 
+    this.canvasClicked = false;
 
+    this.setUpMouseTracking();
     this.setUpStepRateSlider();
     this.setUpStepControls();
     this.setUpHud();
+  }
+
+  setUpMouseTracking() {
+    this.sim.canvas.addEventListener('mousemove', ({ clientX, clientY }) => {
+      this.mouseX = clientX;
+      this.mouseY = clientY;
+    });
+
+    this.sim.canvas.addEventListener('click', () => {
+      const hoveredCell = this.sim.cells.filter(cell => cell.hovered)[0];
+      hoveredCell.alive = !hoveredCell.alive;
+      [hoveredCell].concat(hoveredCell.neighbors).forEach(cell => {
+        cell.update(true);
+      });
+    });
   }
 
   setUpStepRateSlider() {

@@ -30,7 +30,7 @@ export default class {
     for (let i = 0; i < this.height; i++) {
       const row = [];
       for (let j = 0; j < this.width; j++) {
-        row.push(new Cell(this.iface, { x: j, y: i }));
+        row.push(new Cell(this, { x: j, y: i }));
       }
       grid.push(row);
     }
@@ -83,11 +83,11 @@ export default class {
   }
 
 
-  update() {
+  update(clickUpdate = false) {
     this.cells.forEach(cell => {
-      cell.update();
+      cell.update(clickUpdate);
     });
-    this.generation++;
+    if (!this.paused) this.generation++;
   }
 
   draw() {
@@ -96,7 +96,7 @@ export default class {
 
     this.population = 0;
     this.cells.forEach(cell => {
-      cell.draw(this.context);
+      cell.draw();
       if (cell.alive) this.population++;
     });
 
