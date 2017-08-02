@@ -4,7 +4,7 @@ Number.prototype.mod = function(n) {
 
 Array.prototype.flatten = function() {
   let result = [];
-  
+
   this.forEach(el => {
     if (el instanceof Array) {
       result = result.concat(el.flatten());

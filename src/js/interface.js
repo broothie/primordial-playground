@@ -3,8 +3,8 @@ export default class {
     this.sim = sim;
 
     Object.assign(this, {
+      survivalCounts: [2, 3],
       birthCounts: [3],
-      lifeCounts: [2, 3],
 
       dead: '#2CB27A',
       emerging: '#28CC87',
@@ -16,6 +16,7 @@ export default class {
 
     this.setUpMouseTracking();
     this.setUpColorPickers();
+    this.setUpRuleControls();
     this.setUpStepRateSlider();
     this.setUpStepControls();
     this.setUpHud();
@@ -29,6 +30,22 @@ export default class {
 
     this.sim.canvas.addEventListener('click', () => {
       this.sim.update(true);
+    });
+  }
+
+  setUpRuleControls() {
+    ['survival', 'birth'].forEach(ruleName => {
+      const ruleControl = document.getElementById(ruleName + '-rule');
+      ruleControl.addEventListener('input', event => {
+        ruleControl.style.border = '1px solid Gray';
+        const value = event.target.value;
+        try {
+          const counts = value.split(',').map(el => parseInt(el));
+          this[ruleName + 'Counts'] = counts;
+        } catch (e) {
+          ruleControl.style.border = '1px solid Red';
+        }
+      });
     });
   }
 

@@ -177,7 +177,7 @@ var _class = function () {
       }
 
       if (this.alive) {
-        if (iface.lifeCounts.includes(this.aliveNeighbors)) {
+        if (iface.survivalCounts.includes(this.aliveNeighbors)) {
           // Survive
           this.willLive = true;
         } else {
@@ -421,8 +421,8 @@ var _class = function () {
     this.sim = sim;
 
     Object.assign(this, {
+      survivalCounts: [2, 3],
       birthCounts: [3],
-      lifeCounts: [2, 3],
 
       dead: '#2CB27A',
       emerging: '#28CC87',
@@ -434,6 +434,7 @@ var _class = function () {
 
     this.setUpMouseTracking();
     this.setUpColorPickers();
+    this.setUpRuleControls();
     this.setUpStepRateSlider();
     this.setUpStepControls();
     this.setUpHud();
@@ -457,79 +458,100 @@ var _class = function () {
       });
     }
   }, {
+    key: 'setUpRuleControls',
+    value: function setUpRuleControls() {
+      var _this2 = this;
+
+      ['survival', 'birth'].forEach(function (ruleName) {
+        var ruleControl = document.getElementById(ruleName + '-rule');
+        ruleControl.addEventListener('input', function (event) {
+          ruleControl.style.border = '1px solid Gray';
+          var value = event.target.value;
+          try {
+            var counts = value.split(',').map(function (el) {
+              return parseInt(el);
+            });
+            _this2[ruleName + 'Counts'] = counts;
+          } catch (e) {
+            ruleControl.style.border = '1px solid Red';
+          }
+        });
+      });
+    }
+  }, {
     key: 'setUpColorPickers',
     value: function setUpColorPickers() {
-      var _this2 = this;
+      var _this3 = this;
 
       ['alive', 'dying', 'emerging', 'dead'].forEach(function (colorPickerName) {
         var colorPicker = document.getElementById(colorPickerName + '-color');
-        colorPicker.value = _this2[colorPickerName];
+        colorPicker.value = _this3[colorPickerName];
         colorPicker.addEventListener('click', function () {
-          _this2.form.style.display = 'block';
+          _this3.form.style.display = 'block';
           colorPicker.addEventListener('focusin', function () {
-            _this2.form.style.display = null;
+            _this3.form.style.display = null;
           });
         });
 
         colorPicker.addEventListener('change', function (event) {
-          _this2[colorPickerName] = event.target.value;
+          _this3[colorPickerName] = event.target.value;
         });
       });
     }
   }, {
     key: 'setUpStepRateSlider',
     value: function setUpStepRateSlider() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.stepRateSlider = document.getElementById('stepRateSlider');
       this.stepRateSlider.value = this.sim.stepRate;
       this.stepRateSlider.addEventListener('input', function (event) {
-        document.getElementById('stepRate').innerText = _this3.stepRateSlider.value;
-        _this3.sim.stepRate = parseInt(_this3.stepRateSlider.value);
+        document.getElementById('stepRate').innerText = _this4.stepRateSlider.value;
+        _this4.sim.stepRate = parseInt(_this4.stepRateSlider.value);
       });
     }
   }, {
     key: 'setUpStepControls',
     value: function setUpStepControls() {
-      var _this4 = this;
+      var _this5 = this;
 
       ['pause', 'play', 'step', 'clear', 'seed'].forEach(function (buttonName) {
-        _this4[buttonName + 'Button'] = document.getElementById(buttonName);
+        _this5[buttonName + 'Button'] = document.getElementById(buttonName);
       });
 
       ['play', 'seed'].forEach(function (buttonName) {
-        _this4[buttonName + 'Button'].style.display = 'none';
+        _this5[buttonName + 'Button'].style.display = 'none';
       });
 
       this.stepButton.classList.add('button-disabled');
 
       var stepButtonClickHandler = function stepButtonClickHandler() {
-        _this4.sim.update();
+        _this5.sim.update();
       };
 
       this.pauseButton.addEventListener('click', function () {
-        _this4.sim.paused = true;
-        _this4.pauseButton.style.display = 'none';
-        _this4.playButton.style.display = 'block';
-        _this4.stepButton.classList.remove('button-disabled');
-        _this4.stepButton.addEventListener('click', stepButtonClickHandler);
+        _this5.sim.paused = true;
+        _this5.pauseButton.style.display = 'none';
+        _this5.playButton.style.display = 'block';
+        _this5.stepButton.classList.remove('button-disabled');
+        _this5.stepButton.addEventListener('click', stepButtonClickHandler);
       });
 
       this.playButton.addEventListener('click', function () {
-        _this4.sim.paused = false;
-        _this4.playButton.style.display = 'none';
-        _this4.pauseButton.style.display = 'block';
-        _this4.stepButton.classList.add('button-disabled');
-        _this4.stepButton.removeEventListener('click', stepButtonClickHandler);
+        _this5.sim.paused = false;
+        _this5.playButton.style.display = 'none';
+        _this5.pauseButton.style.display = 'block';
+        _this5.stepButton.classList.add('button-disabled');
+        _this5.stepButton.removeEventListener('click', stepButtonClickHandler);
       });
 
       this.clearButton.addEventListener('click', function () {
-        _this4.sim.generateGrid();
+        _this5.sim.generateGrid();
       });
 
       this.seedButton.addEventListener('click', function () {
-        _this4.sim.seed();
-        _this4.sim.update();
+        _this5.sim.seed();
+        _this5.sim.update();
       });
     }
   }, {

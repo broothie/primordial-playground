@@ -18,6 +18,7 @@
 
   &:hover {
     width: 250px;
+    opacity: 1;
 
     form {
       display: block;
@@ -84,4 +85,30 @@
 
 .status-colors {
   margin-bottom: 20px;
+}
+
+.rule-status-section {
+  margin-bottom: 10px;
+
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+}
+
+.rule-controls {
+  width: 110px;
+
+  display: flex;
+  flex-flow: column;
+  justify-content: space-around;
+
+  div {
+
+    input {
+      width: 60px;
+
+      padding: 1px 5px;
+      border: 1px solid Gray;
+    }
+  }
 }

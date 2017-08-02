@@ -87,27 +87,32 @@ html, body {
   padding: 15px 20px;
   border: 1px solid WhiteSmoke;
   background-color: White;
-  opacity: 0.9;
+  opacity: 0.8;
   cursor: default;
   left: 15px;
-  top: 15px;
-  width: 320px; }
+  top: 15px; }
   .info h1 {
-    font-size: 24px; }
+    font-size: 16px; }
     .info h1 a {
       color: black; }
   .info article {
     margin-top: 10px;
     display: none; }
-  .info:hover article {
-    display: block; }
+    .info article span {
+      background-color: WhiteSmoke;
+      font-style: italic; }
+  .info:hover {
+    width: 320px;
+    opacity: 1; }
+    .info:hover article {
+      display: block; }
 
 .controls {
   position: fixed;
   padding: 15px 20px;
   border: 1px solid WhiteSmoke;
   background-color: White;
-  opacity: 0.9;
+  opacity: 0.8;
   cursor: default;
   right: 15px;
   bottom: 15px; }
@@ -118,7 +123,8 @@ html, body {
       margin: 10px 0;
       border: 1px solid WhiteSmoke; }
   .controls:hover {
-    width: 250px; }
+    width: 250px;
+    opacity: 1; }
     .controls:hover form {
       display: block; }
     .controls:hover footer {
@@ -163,5 +169,21 @@ html, body {
 
 .status-colors {
   margin-bottom: 20px; }
+
+.rule-status-section {
+  margin-bottom: 10px;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between; }
+
+.rule-controls {
+  width: 110px;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-around; }
+  .rule-controls div input {
+    width: 60px;
+    padding: 1px 5px;
+    border: 1px solid Gray; }
 
 /*# sourceMappingURL=bundle.css.map */

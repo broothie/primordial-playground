@@ -33,7 +33,7 @@ export default class {
     }
 
     if (this.alive) {
-      if (iface.lifeCounts.includes(this.aliveNeighbors)) {
+      if (iface.survivalCounts.includes(this.aliveNeighbors)) {
         // Survive
         this.willLive = true;
       } else {

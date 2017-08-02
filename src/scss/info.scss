@@ -2,10 +2,9 @@
   @include overlay;
   left: 15px;
   top: 15px;
-  width: 320px;
 
   h1 {
-    font-size: 24px;
+    font-size: 16px;
 
     a {
       color: black;
@@ -15,9 +14,19 @@
   article {
     margin-top: 10px;
     display: none;
+
+    span {
+      background-color: WhiteSmoke;
+      font-style: italic;
+    }
   }
 
-  &:hover article {
-    display: block;
+  &:hover {
+    width: 320px;
+    opacity: 1;
+
+    article {
+      display: block;
+    }
   }
 }
