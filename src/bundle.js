@@ -145,26 +145,24 @@ var _class = function () {
 
     this.displayX = this.x * this.size;
     this.displayY = this.y * this.size;
-
-    this.willLive = false;
   }
 
   _createClass(_class, [{
+    key: 'getAliveNeighbors',
+    value: function getAliveNeighbors() {
+      this.aliveNeighbors = this.neighbors.filter(function (cell) {
+        return cell.alive;
+      }).length;
+    }
+  }, {
     key: 'update',
     value: function update() {
       var clickUpdate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
       var iface = this.sim.iface;
-      var aliveNeighbors = this.neighbors.filter(function (cell) {
-        return cell.alive;
-      }).length;
-
-      if (!clickUpdate) {
-        this.alive = this.willLive;
-      }
 
       if (this.alive) {
-        if (iface.lifeCounts.includes(aliveNeighbors)) {
+        if (iface.lifeCounts.includes(this.aliveNeighbors)) {
           // Survive
           this.willLive = true;
         } else {
@@ -172,13 +170,17 @@ var _class = function () {
           this.willLive = false;
         }
       } else {
-        if (iface.birthCounts.includes(aliveNeighbors)) {
+        if (iface.birthCounts.includes(this.aliveNeighbors)) {
           // Birth
           this.willLive = true;
         } else {
           // Dead
           this.willLive = false;
         }
+      }
+
+      if (!clickUpdate) {
+        this.alive = this.willLive;
       }
     }
   }, {
@@ -263,7 +265,7 @@ var _class = function () {
 
       paused: false,
 
-      seedRatio: 0.3,
+      seedRatio: 0.1,
 
       width: Math.ceil(window.innerWidth / 10),
       height: Math.ceil(window.innerHeight / 10)
@@ -273,6 +275,9 @@ var _class = function () {
 
     this.generateGrid();
     this.seed();
+    this.cells.forEach(function (cell) {
+      cell.getAliveNeighbors();
+    });
   }
 
   _createClass(_class, [{
@@ -344,12 +349,13 @@ var _class = function () {
   }, {
     key: 'update',
     value: function update() {
-      var clickUpdate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-
       this.cells.forEach(function (cell) {
-        cell.update(clickUpdate);
+        cell.getAliveNeighbors();
       });
-      if (!this.paused) this.generation++;
+      this.cells.forEach(function (cell) {
+        cell.update();
+      });
+      this.generation++;
     }
   }, {
     key: 'draw',
@@ -368,6 +374,20 @@ var _class = function () {
       this.iface.draw();
 
       this.frameCount++;
+    }
+  }, {
+    key: 'clickHovered',
+    value: function clickHovered() {
+      var hoveredCell = this.cells.filter(function (cell) {
+        return cell.hovered;
+      })[0];
+      hoveredCell.alive = !hoveredCell.alive;
+      [hoveredCell].concat(hoveredCell.neighbors).forEach(function (cell) {
+        cell.getAliveNeighbors();
+      });
+      [hoveredCell].concat(hoveredCell.neighbors).forEach(function (cell) {
+        cell.update(true);
+      });
     }
   }, {
     key: 'kill',
@@ -412,8 +432,6 @@ var _class = function () {
       alive: '#8D23B2'
     }, options);
 
-    this.canvasClicked = false;
-
     this.setUpMouseTracking();
     this.setUpStepRateSlider();
     this.setUpStepControls();
@@ -434,13 +452,7 @@ var _class = function () {
       });
 
       this.sim.canvas.addEventListener('click', function () {
-        var hoveredCell = _this.sim.cells.filter(function (cell) {
-          return cell.hovered;
-        })[0];
-        hoveredCell.alive = !hoveredCell.alive;
-        [hoveredCell].concat(hoveredCell.neighbors).forEach(function (cell) {
-          cell.update(true);
-        });
+        _this.sim.clickHovered();
       });
     }
   }, {

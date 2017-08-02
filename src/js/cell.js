@@ -13,20 +13,17 @@ export default class {
 
     this.displayX = this.x * this.size;
     this.displayY = this.y * this.size;
+  }
 
-    this.willLive = false;
+  getAliveNeighbors() {
+    this.aliveNeighbors = this.neighbors.filter(cell => cell.alive).length;
   }
 
   update(clickUpdate = false) {
     const iface = this.sim.iface;
-    const aliveNeighbors = this.neighbors.filter(cell => cell.alive).length;
-
-    if(!clickUpdate) {
-      this.alive = this.willLive;
-    }
 
     if (this.alive) {
-      if (iface.lifeCounts.includes(aliveNeighbors)) {
+      if (iface.lifeCounts.includes(this.aliveNeighbors)) {
         // Survive
         this.willLive = true;
       } else {
@@ -34,13 +31,17 @@ export default class {
         this.willLive = false;
       }
     } else {
-      if (iface.birthCounts.includes(aliveNeighbors)) {
+      if (iface.birthCounts.includes(this.aliveNeighbors)) {
         // Birth
         this.willLive = true;
       } else {
         // Dead
         this.willLive = false;
       }
+    }
+
+    if(!clickUpdate) {
+      this.alive = this.willLive;
     }
   }
 

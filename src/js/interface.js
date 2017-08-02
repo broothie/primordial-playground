@@ -12,8 +12,6 @@ export default class {
       alive: '#8D23B2',
     }, options);
 
-    this.canvasClicked = false;
-
     this.setUpMouseTracking();
     this.setUpStepRateSlider();
     this.setUpStepControls();
@@ -27,11 +25,7 @@ export default class {
     });
 
     this.sim.canvas.addEventListener('click', () => {
-      const hoveredCell = this.sim.cells.filter(cell => cell.hovered)[0];
-      hoveredCell.alive = !hoveredCell.alive;
-      [hoveredCell].concat(hoveredCell.neighbors).forEach(cell => {
-        cell.update(true);
-      });
+      this.sim.clickHovered();
     });
   }
 

@@ -13,7 +13,7 @@ export default class {
 
       paused: false,
 
-      seedRatio: 0.3,
+      seedRatio: 0.1,
 
       width: Math.ceil(window.innerWidth / 10),
       height: Math.ceil(window.innerHeight / 10),
@@ -23,6 +23,9 @@ export default class {
 
     this.generateGrid();
     this.seed();
+    this.cells.forEach(cell => {
+      cell.getAliveNeighbors();
+    });
   }
 
   generateGrid() {
@@ -82,12 +85,14 @@ export default class {
     this.loopCount++;
   }
 
-
-  update(clickUpdate = false) {
+  update() {
     this.cells.forEach(cell => {
-      cell.update(clickUpdate);
+      cell.getAliveNeighbors();
     });
-    if (!this.paused) this.generation++;
+    this.cells.forEach(cell => {
+      cell.update();
+    });
+    this.generation++;
   }
 
   draw() {
@@ -103,6 +108,17 @@ export default class {
     this.iface.draw();
 
     this.frameCount++;
+  }
+
+  clickHovered() {
+    const hoveredCell = this.cells.filter(cell => cell.hovered)[0];
+    hoveredCell.alive = !hoveredCell.alive;
+    [hoveredCell].concat(hoveredCell.neighbors).forEach(cell => {
+      cell.getAliveNeighbors();
+    });
+    [hoveredCell].concat(hoveredCell.neighbors).forEach(cell => {
+      cell.update(true);
+    });
   }
 
   kill() {
