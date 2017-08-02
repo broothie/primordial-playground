@@ -15,12 +15,22 @@ export default class {
     this.displayY = this.y * this.size;
   }
 
+  step() {
+    this.alive = this.willLive;
+  }
+
   getAliveNeighbors() {
     this.aliveNeighbors = this.neighbors.filter(cell => cell.alive).length;
   }
 
-  update(clickUpdate = false) {
+  update(fromClick = false) {
     const iface = this.sim.iface;
+
+    if (fromClick && this.hovered) {
+      this.alive = !this.alive;
+      this.neighbors.forEach(cell => cell.getAliveNeighbors());
+      this.neighbors.forEach(cell => cell.update(true));
+    }
 
     if (this.alive) {
       if (iface.lifeCounts.includes(this.aliveNeighbors)) {
@@ -38,10 +48,6 @@ export default class {
         // Dead
         this.willLive = false;
       }
-    }
-
-    if(!clickUpdate) {
-      this.alive = this.willLive;
     }
   }
 

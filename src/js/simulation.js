@@ -13,7 +13,7 @@ export default class {
 
       paused: false,
 
-      seedRatio: 0.1,
+      seedRatio: 0.08,
 
       width: Math.ceil(window.innerWidth / 10),
       height: Math.ceil(window.innerHeight / 10),
@@ -23,9 +23,6 @@ export default class {
 
     this.generateGrid();
     this.seed();
-    this.cells.forEach(cell => {
-      cell.getAliveNeighbors();
-    });
   }
 
   generateGrid() {
@@ -54,18 +51,17 @@ export default class {
     this.grid = grid;
     this.cells = this.grid.flatten();
 
-    this.generatation = 0;
+    this.generation = 0;
   }
 
   seed() {
     this.cells.forEach(cell => {
-      cell.alive = Math.random() < this.seedRatio;
+      cell.willLive = Math.random() < this.seedRatio;
     });
   }
 
   run() {
     this.loopCount = 0;
-    this.generation = 0;
     this.frameCount = 0;
 
     this.loopId = setInterval(this.loop.bind(this), 1000 / this.loopRate);
@@ -85,13 +81,10 @@ export default class {
     this.loopCount++;
   }
 
-  update() {
-    this.cells.forEach(cell => {
-      cell.getAliveNeighbors();
-    });
-    this.cells.forEach(cell => {
-      cell.update();
-    });
+  update(fromClick = false) {
+    if (!fromClick) this.cells.forEach(cell => cell.step());
+    this.cells.forEach(cell => cell.getAliveNeighbors());
+    this.cells.forEach(cell => cell.update(fromClick));
     this.generation++;
   }
 
@@ -108,17 +101,6 @@ export default class {
     this.iface.draw();
 
     this.frameCount++;
-  }
-
-  clickHovered() {
-    const hoveredCell = this.cells.filter(cell => cell.hovered)[0];
-    hoveredCell.alive = !hoveredCell.alive;
-    [hoveredCell].concat(hoveredCell.neighbors).forEach(cell => {
-      cell.getAliveNeighbors();
-    });
-    [hoveredCell].concat(hoveredCell.neighbors).forEach(cell => {
-      cell.update(true);
-    });
   }
 
   kill() {

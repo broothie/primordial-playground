@@ -12,6 +12,8 @@ export default class {
       alive: '#8D23B2',
     }, options);
 
+    this.mouseClicked = false;
+
     this.setUpMouseTracking();
     this.setUpStepRateSlider();
     this.setUpStepControls();
@@ -25,13 +27,12 @@ export default class {
     });
 
     this.sim.canvas.addEventListener('click', () => {
-      this.sim.clickHovered();
+      this.sim.update(true);
     });
   }
 
   setUpStepRateSlider() {
     this.stepRateSlider = document.getElementById('stepRateSlider');
-    this.stepRateSlider.setAttribute('max', this.sim.loopRate);
     this.stepRateSlider.value = this.sim.stepRate;
     this.stepRateSlider.addEventListener('input', event => {
       document.getElementById('stepRate').innerText = this.stepRateSlider.value;

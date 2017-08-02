@@ -148,6 +148,11 @@ var _class = function () {
   }
 
   _createClass(_class, [{
+    key: 'step',
+    value: function step() {
+      this.alive = this.willLive;
+    }
+  }, {
     key: 'getAliveNeighbors',
     value: function getAliveNeighbors() {
       this.aliveNeighbors = this.neighbors.filter(function (cell) {
@@ -157,9 +162,19 @@ var _class = function () {
   }, {
     key: 'update',
     value: function update() {
-      var clickUpdate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+      var fromClick = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
       var iface = this.sim.iface;
+
+      if (fromClick && this.hovered) {
+        this.alive = !this.alive;
+        this.neighbors.forEach(function (cell) {
+          return cell.getAliveNeighbors();
+        });
+        this.neighbors.forEach(function (cell) {
+          return cell.update(true);
+        });
+      }
 
       if (this.alive) {
         if (iface.lifeCounts.includes(this.aliveNeighbors)) {
@@ -177,10 +192,6 @@ var _class = function () {
           // Dead
           this.willLive = false;
         }
-      }
-
-      if (!clickUpdate) {
-        this.alive = this.willLive;
       }
     }
   }, {
@@ -265,7 +276,7 @@ var _class = function () {
 
       paused: false,
 
-      seedRatio: 0.1,
+      seedRatio: 0.08,
 
       width: Math.ceil(window.innerWidth / 10),
       height: Math.ceil(window.innerHeight / 10)
@@ -275,9 +286,6 @@ var _class = function () {
 
     this.generateGrid();
     this.seed();
-    this.cells.forEach(function (cell) {
-      cell.getAliveNeighbors();
-    });
   }
 
   _createClass(_class, [{
@@ -306,7 +314,7 @@ var _class = function () {
       this.grid = grid;
       this.cells = this.grid.flatten();
 
-      this.generatation = 0;
+      this.generation = 0;
     }
   }, {
     key: 'seed',
@@ -314,14 +322,13 @@ var _class = function () {
       var _this = this;
 
       this.cells.forEach(function (cell) {
-        cell.alive = Math.random() < _this.seedRatio;
+        cell.willLive = Math.random() < _this.seedRatio;
       });
     }
   }, {
     key: 'run',
     value: function run() {
       this.loopCount = 0;
-      this.generation = 0;
       this.frameCount = 0;
 
       this.loopId = setInterval(this.loop.bind(this), 1000 / this.loopRate);
@@ -349,11 +356,16 @@ var _class = function () {
   }, {
     key: 'update',
     value: function update() {
-      this.cells.forEach(function (cell) {
-        cell.getAliveNeighbors();
+      var fromClick = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+      if (!fromClick) this.cells.forEach(function (cell) {
+        return cell.step();
       });
       this.cells.forEach(function (cell) {
-        cell.update();
+        return cell.getAliveNeighbors();
+      });
+      this.cells.forEach(function (cell) {
+        return cell.update(fromClick);
       });
       this.generation++;
     }
@@ -374,20 +386,6 @@ var _class = function () {
       this.iface.draw();
 
       this.frameCount++;
-    }
-  }, {
-    key: 'clickHovered',
-    value: function clickHovered() {
-      var hoveredCell = this.cells.filter(function (cell) {
-        return cell.hovered;
-      })[0];
-      hoveredCell.alive = !hoveredCell.alive;
-      [hoveredCell].concat(hoveredCell.neighbors).forEach(function (cell) {
-        cell.getAliveNeighbors();
-      });
-      [hoveredCell].concat(hoveredCell.neighbors).forEach(function (cell) {
-        cell.update(true);
-      });
     }
   }, {
     key: 'kill',
@@ -432,6 +430,8 @@ var _class = function () {
       alive: '#8D23B2'
     }, options);
 
+    this.mouseClicked = false;
+
     this.setUpMouseTracking();
     this.setUpStepRateSlider();
     this.setUpStepControls();
@@ -452,7 +452,7 @@ var _class = function () {
       });
 
       this.sim.canvas.addEventListener('click', function () {
-        _this.sim.clickHovered();
+        _this.sim.update(true);
       });
     }
   }, {
@@ -461,7 +461,6 @@ var _class = function () {
       var _this2 = this;
 
       this.stepRateSlider = document.getElementById('stepRateSlider');
-      this.stepRateSlider.setAttribute('max', this.sim.loopRate);
       this.stepRateSlider.value = this.sim.stepRate;
       this.stepRateSlider.addEventListener('input', function (event) {
         document.getElementById('stepRate').innerText = _this2.stepRateSlider.value;
