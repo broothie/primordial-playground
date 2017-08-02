@@ -22,7 +22,7 @@ This Game of Life simulator will be allow the user to:
 - [ ] Production README
 
 ## Wireframes
-![Game of Life wireframe](CGOL-wireframe.png)
+![Game of Life wireframe](assets/img/CGOL-wireframe.png)
 
 ## Architecture and Technologies
 ### Stack

@@ -1,5 +1,4 @@
 const path = require('path');
-
 var webpack = require("webpack");
 
 var plugins = []; // if using any plugins for both dev and production
@@ -24,9 +23,9 @@ plugins = plugins.concat(
 
 module.exports = {
   context: __dirname,
-  entry: './src/js/entry.js',
+  entry: './lib/entry.js',
   output: {
-    filename: './src/bundle.js'
+    filename: './bundle.js'
   },
   resolve: {
     extensions: ['.js', '*']
