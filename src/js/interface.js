@@ -6,10 +6,10 @@ export default class {
       survivalCounts: [2, 3],
       birthCounts: [3],
 
-      dead: '#2CB27A',
-      emerging: '#28CC87',
-      dying: '#D14CFF',
-      alive: '#8D23B2',
+      dead: '#004080',
+      emerging: '#0080FF',
+      dying: '#CCFF66',
+      alive: '#66FF66'
     }, options);
 
     this.form = document.getElementById('controls-form');
