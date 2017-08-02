@@ -28,14 +28,29 @@
     </section>
 
     <section class="controls">
-      <form>
-        <fieldset>
+      <form id="controls-form">
+        <div>
 
-        </fieldset>
+        </div>
 
-        <fieldset>
-
-        </fieldset>
+        <div class="status-colors">
+          <div>
+            <input id="alive-color" type="color"/>
+            <label for="alive-color">Alive</label>
+          </div>
+          <div>
+            <input id="dying-color" type="color"/>
+            <label for="dying-color">Dying</label>
+          </div>
+          <div>
+            <input id="emerging-color" type="color"/>
+            <label for="emerging-color">Emerging</label>
+          </div>
+          <div>
+            <input id="dead-color" type="color"/>
+            <label for="dead-color">Dead</label>
+          </div>
+        </div>
 
         <div class="step-rate">
           <label for="stepRate">Step Rate: <span id="stepRate">12</span></label>
@@ -54,7 +69,7 @@
           <img id="seed" src="assets/img/coffee-beans.png" alt="seed">
         </div>
 
-        <div class="stats">
+        <div class="hud">
           <span>
             <p>Population:</p><span id="population-count"></span>
           </span>

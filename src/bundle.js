@@ -213,7 +213,7 @@ var _class = function () {
         }
       } else {
         if (this.willLive) {
-          this.color = iface.birth;
+          this.color = iface.emerging;
         } else {
           this.color = iface.dead;
         }
@@ -425,14 +425,15 @@ var _class = function () {
       lifeCounts: [2, 3],
 
       dead: '#2CB27A',
-      birth: '#28CC87',
+      emerging: '#28CC87',
       dying: '#D14CFF',
       alive: '#8D23B2'
     }, options);
 
-    this.mouseClicked = false;
+    this.form = document.getElementById('controls-form');
 
     this.setUpMouseTracking();
+    this.setUpColorPickers();
     this.setUpStepRateSlider();
     this.setUpStepControls();
     this.setUpHud();
@@ -456,59 +457,79 @@ var _class = function () {
       });
     }
   }, {
+    key: 'setUpColorPickers',
+    value: function setUpColorPickers() {
+      var _this2 = this;
+
+      ['alive', 'dying', 'emerging', 'dead'].forEach(function (colorPickerName) {
+        var colorPicker = document.getElementById(colorPickerName + '-color');
+        colorPicker.value = _this2[colorPickerName];
+        colorPicker.addEventListener('click', function () {
+          _this2.form.style.display = 'block';
+          colorPicker.addEventListener('focusin', function () {
+            _this2.form.style.display = null;
+          });
+        });
+
+        colorPicker.addEventListener('change', function (event) {
+          _this2[colorPickerName] = event.target.value;
+        });
+      });
+    }
+  }, {
     key: 'setUpStepRateSlider',
     value: function setUpStepRateSlider() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.stepRateSlider = document.getElementById('stepRateSlider');
       this.stepRateSlider.value = this.sim.stepRate;
       this.stepRateSlider.addEventListener('input', function (event) {
-        document.getElementById('stepRate').innerText = _this2.stepRateSlider.value;
-        _this2.sim.stepRate = parseInt(_this2.stepRateSlider.value);
+        document.getElementById('stepRate').innerText = _this3.stepRateSlider.value;
+        _this3.sim.stepRate = parseInt(_this3.stepRateSlider.value);
       });
     }
   }, {
     key: 'setUpStepControls',
     value: function setUpStepControls() {
-      var _this3 = this;
+      var _this4 = this;
 
       ['pause', 'play', 'step', 'clear', 'seed'].forEach(function (buttonName) {
-        _this3[buttonName + 'Button'] = document.getElementById(buttonName);
+        _this4[buttonName + 'Button'] = document.getElementById(buttonName);
       });
 
       ['play', 'seed'].forEach(function (buttonName) {
-        _this3[buttonName + 'Button'].style.display = 'none';
+        _this4[buttonName + 'Button'].style.display = 'none';
       });
 
       this.stepButton.classList.add('button-disabled');
 
       var stepButtonClickHandler = function stepButtonClickHandler() {
-        _this3.sim.update();
+        _this4.sim.update();
       };
 
       this.pauseButton.addEventListener('click', function () {
-        _this3.sim.paused = true;
-        _this3.pauseButton.style.display = 'none';
-        _this3.playButton.style.display = 'block';
-        _this3.stepButton.classList.remove('button-disabled');
-        _this3.stepButton.addEventListener('click', stepButtonClickHandler);
+        _this4.sim.paused = true;
+        _this4.pauseButton.style.display = 'none';
+        _this4.playButton.style.display = 'block';
+        _this4.stepButton.classList.remove('button-disabled');
+        _this4.stepButton.addEventListener('click', stepButtonClickHandler);
       });
 
       this.playButton.addEventListener('click', function () {
-        _this3.sim.paused = false;
-        _this3.playButton.style.display = 'none';
-        _this3.pauseButton.style.display = 'block';
-        _this3.stepButton.classList.add('button-disabled');
-        _this3.stepButton.removeEventListener('click', stepButtonClickHandler);
+        _this4.sim.paused = false;
+        _this4.playButton.style.display = 'none';
+        _this4.pauseButton.style.display = 'block';
+        _this4.stepButton.classList.add('button-disabled');
+        _this4.stepButton.removeEventListener('click', stepButtonClickHandler);
       });
 
       this.clearButton.addEventListener('click', function () {
-        _this3.sim.generateGrid();
+        _this4.sim.generateGrid();
       });
 
       this.seedButton.addEventListener('click', function () {
-        _this3.sim.seed();
-        _this3.sim.update();
+        _this4.sim.seed();
+        _this4.sim.update();
       });
     }
   }, {

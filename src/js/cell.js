@@ -62,7 +62,7 @@ export default class {
       }
     } else {
       if (this.willLive) {
-        this.color = iface.birth;
+        this.color = iface.emerging;
       } else {
         this.color = iface.dead;
       }

@@ -37,7 +37,7 @@
   justify-content: space-between;
 }
 
-.stats {
+.hud {
   flex: 1;
 
   span {
@@ -80,4 +80,8 @@
   display: flex;
   flex-flow: row;
   justify-content: space-between;
+}
+
+.status-colors {
+  margin-bottom: 20px;
 }

@@ -130,9 +130,9 @@ html, body {
   flex-flow: row;
   justify-content: space-between; }
 
-.stats {
+.hud {
   flex: 1; }
-  .stats span {
+  .hud span {
     display: flex;
     flex-flow: row;
     justify-content: space-between;
@@ -160,5 +160,8 @@ html, body {
   display: flex;
   flex-flow: row;
   justify-content: space-between; }
+
+.status-colors {
+  margin-bottom: 20px; }
 
 /*# sourceMappingURL=bundle.css.map */

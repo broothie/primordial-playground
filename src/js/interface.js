@@ -7,14 +7,15 @@ export default class {
       lifeCounts: [2, 3],
 
       dead: '#2CB27A',
-      birth: '#28CC87',
+      emerging: '#28CC87',
       dying: '#D14CFF',
       alive: '#8D23B2',
     }, options);
 
-    this.mouseClicked = false;
+    this.form = document.getElementById('controls-form');
 
     this.setUpMouseTracking();
+    this.setUpColorPickers();
     this.setUpStepRateSlider();
     this.setUpStepControls();
     this.setUpHud();
@@ -28,6 +29,23 @@ export default class {
 
     this.sim.canvas.addEventListener('click', () => {
       this.sim.update(true);
+    });
+  }
+
+  setUpColorPickers() {
+    ['alive', 'dying', 'emerging', 'dead'].forEach(colorPickerName => {
+      const colorPicker = document.getElementById(colorPickerName + '-color');
+      colorPicker.value = this[colorPickerName];
+      colorPicker.addEventListener('click', () => {
+        this.form.style.display = 'block';
+        colorPicker.addEventListener('focusin', () => {
+          this.form.style.display = null;
+        });
+      });
+
+      colorPicker.addEventListener('change', event => {
+        this[colorPickerName] = event.target.value;
+      });
     });
   }
 
