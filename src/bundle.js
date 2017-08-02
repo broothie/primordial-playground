@@ -350,6 +350,7 @@ var _class = function () {
 
         if (_this.currentPattern) {
           _this.currentPattern = null;
+          _this.sim.canvas.removeEventListener('contextmenu', _this.rotateHandler);
         }
       });
 
@@ -367,11 +368,13 @@ var _class = function () {
       spaceshipButton.addEventListener('click', function () {
         _this2.currentPattern = [[0, 1, 1, 1, 1], [1, 0, 0, 0, 1], [0, 0, 0, 0, 1], [1, 0, 0, 1, 0]];
 
-        _this2.rotateHandler = _this2.sim.canvas.addEventListener('contextmenu', function (e) {
+        _this2.rotateHandler = function (e) {
           e.preventDefault();
           _this2.currentPattern = _this2.currentPattern.rotate();
           return false;
-        }, false);
+        };
+
+        _this2.sim.canvas.addEventListener('contextmenu', _this2.rotateHandler, false);
       });
     }
   }, {

@@ -36,6 +36,7 @@ export default class {
 
       if (this.currentPattern) {
         this.currentPattern = null;
+        this.sim.canvas.removeEventListener('contextmenu', this.rotateHandler);
       }
     });
 
@@ -55,11 +56,13 @@ export default class {
         [1, 0, 0, 1, 0]
       ];
 
-      this.rotateHandler = this.sim.canvas.addEventListener('contextmenu', e => {
+      this.rotateHandler = e => {
         e.preventDefault();
         this.currentPattern = this.currentPattern.rotate();
         return false;
-      }, false);
+      };
+
+      this.sim.canvas.addEventListener('contextmenu', this.rotateHandler, false);
     });
 
   }
