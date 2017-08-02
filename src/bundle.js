@@ -60,21 +60,19 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */,
-/* 1 */,
-/* 2 */
+/* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(3);
+__webpack_require__(1);
 
-var _simulation = __webpack_require__(8);
+var _simulation = __webpack_require__(2);
 
 var _simulation2 = _interopRequireDefault(_simulation);
 
@@ -87,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /***/ }),
-/* 3 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -112,9 +110,7 @@ Array.prototype.flatten = function () {
 };
 
 /***/ }),
-/* 4 */,
-/* 5 */,
-/* 6 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -126,135 +122,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var _class = function () {
-  function _class(sim, options) {
-    _classCallCheck(this, _class);
-
-    this.sim = sim;
-
-    Object.assign(this, {
-      x: 0,
-      y: 0,
-      size: 10,
-      color: this.sim.iface.dead,
-      alive: false,
-      neighbors: []
-    }, options);
-
-    this.displayX = this.x * this.size;
-    this.displayY = this.y * this.size;
-  }
-
-  _createClass(_class, [{
-    key: 'step',
-    value: function step() {
-      this.alive = this.willLive;
-    }
-  }, {
-    key: 'getAliveNeighbors',
-    value: function getAliveNeighbors() {
-      this.aliveNeighbors = this.neighbors.filter(function (cell) {
-        return cell.alive;
-      }).length;
-    }
-  }, {
-    key: 'update',
-    value: function update() {
-      var fromClick = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-
-      var iface = this.sim.iface;
-
-      if (fromClick && this.hovered) {
-        this.alive = !this.alive;
-        this.neighbors.forEach(function (cell) {
-          return cell.getAliveNeighbors();
-        });
-        this.neighbors.forEach(function (cell) {
-          return cell.update(true);
-        });
-      }
-
-      if (this.alive) {
-        if (iface.survivalCounts.includes(this.aliveNeighbors)) {
-          // Survive
-          this.willLive = true;
-        } else {
-          // Die
-          this.willLive = false;
-        }
-      } else {
-        if (iface.birthCounts.includes(this.aliveNeighbors)) {
-          // Birth
-          this.willLive = true;
-        } else {
-          // Dead
-          this.willLive = false;
-        }
-      }
-    }
-  }, {
-    key: 'draw',
-    value: function draw() {
-      var displayX = this.displayX,
-          displayY = this.displayY,
-          size = this.size,
-          _sim = this.sim,
-          context = _sim.context,
-          iface = _sim.iface;
-
-
-      if (this.alive) {
-        if (this.willLive) {
-          this.color = iface.alive;
-        } else {
-          this.color = iface.dying;
-        }
-      } else {
-        if (this.willLive) {
-          this.color = iface.emerging;
-        } else {
-          this.color = iface.dead;
-        }
-      }
-
-      this.hovered = displayX <= iface.mouseX && iface.mouseX < displayX + size && displayY <= iface.mouseY && iface.mouseY < displayY + size;
-
-      if (this.hovered) {
-        context.fillStyle = 'white';
-        context.fillRect(displayX, displayY, size, size);
-      }
-
-      context.fillStyle = this.color;
-      context.fillRect(displayX + (this.hovered ? 1 : 0), displayY + (this.hovered ? 1 : 0), size - (this.hovered ? 2 : 0), size - (this.hovered ? 2 : 0));
-    }
-  }]);
-
-  return _class;
-}();
-
-exports.default = _class;
-
-/***/ }),
-/* 7 */,
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _interface = __webpack_require__(9);
+var _interface = __webpack_require__(3);
 
 var _interface2 = _interopRequireDefault(_interface);
 
-var _cell = __webpack_require__(6);
+var _cell = __webpack_require__(4);
 
 var _cell2 = _interopRequireDefault(_cell);
 
@@ -400,7 +272,7 @@ var _class = function () {
 exports.default = _class;
 
 /***/ }),
-/* 9 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -573,6 +445,129 @@ var _class = function () {
 
       this.populationCount.innerText = this.sim.population;
       this.generationCount.innerText = this.sim.generation;
+    }
+  }]);
+
+  return _class;
+}();
+
+exports.default = _class;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var _class = function () {
+  function _class(sim, options) {
+    _classCallCheck(this, _class);
+
+    this.sim = sim;
+
+    Object.assign(this, {
+      x: 0,
+      y: 0,
+      size: 10,
+      color: this.sim.iface.dead,
+      alive: false,
+      neighbors: []
+    }, options);
+
+    this.displayX = this.x * this.size;
+    this.displayY = this.y * this.size;
+  }
+
+  _createClass(_class, [{
+    key: 'step',
+    value: function step() {
+      this.alive = this.willLive;
+    }
+  }, {
+    key: 'getAliveNeighbors',
+    value: function getAliveNeighbors() {
+      this.aliveNeighbors = this.neighbors.filter(function (cell) {
+        return cell.alive;
+      }).length;
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+      var fromClick = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+      var iface = this.sim.iface;
+
+      if (fromClick && this.hovered) {
+        this.alive = !this.alive;
+        this.neighbors.forEach(function (cell) {
+          return cell.getAliveNeighbors();
+        });
+        this.neighbors.forEach(function (cell) {
+          return cell.update(true);
+        });
+      }
+
+      if (this.alive) {
+        if (iface.survivalCounts.includes(this.aliveNeighbors)) {
+          // Survive
+          this.willLive = true;
+        } else {
+          // Die
+          this.willLive = false;
+        }
+      } else {
+        if (iface.birthCounts.includes(this.aliveNeighbors)) {
+          // Birth
+          this.willLive = true;
+        } else {
+          // Dead
+          this.willLive = false;
+        }
+      }
+    }
+  }, {
+    key: 'draw',
+    value: function draw() {
+      var displayX = this.displayX,
+          displayY = this.displayY,
+          size = this.size,
+          _sim = this.sim,
+          context = _sim.context,
+          iface = _sim.iface;
+
+
+      if (this.alive) {
+        if (this.willLive) {
+          this.color = iface.alive;
+        } else {
+          this.color = iface.dying;
+        }
+      } else {
+        if (this.willLive) {
+          this.color = iface.emerging;
+        } else {
+          this.color = iface.dead;
+        }
+      }
+
+      this.hovered = displayX <= iface.mouseX && iface.mouseX < displayX + size && displayY <= iface.mouseY && iface.mouseY < displayY + size;
+
+      if (this.hovered) {
+        context.fillStyle = 'white';
+        context.fillRect(displayX, displayY, size, size);
+      }
+
+      context.fillStyle = this.color;
+      context.fillRect(displayX + (this.hovered ? 1 : 0), displayY + (this.hovered ? 1 : 0), size - (this.hovered ? 2 : 0), size - (this.hovered ? 2 : 0));
     }
   }]);
 
