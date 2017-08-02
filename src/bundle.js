@@ -109,6 +109,23 @@ Array.prototype.flatten = function () {
   return result;
 };
 
+Array.prototype.rotate = function () {
+  // Assumes rectangular matrix
+  var originalWidth = this[0].length;
+  var originalHeight = this.length;
+
+  var array = [];
+  for (var oj = originalWidth - 1; oj >= 0; oj--) {
+    var row = [];
+    for (var oi = 0; oi < originalHeight; oi++) {
+      row.push(this[oi][oj]);
+    }
+    array.push(row);
+  }
+
+  return array;
+};
+
 /***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -239,7 +256,7 @@ var _class = function () {
       this.cells.forEach(function (cell) {
         return cell.update(fromClick);
       });
-      this.generation++;
+      if (!fromClick) this.generation++;
     }
   }, {
     key: 'draw',
@@ -296,15 +313,18 @@ var _class = function () {
       survivalCounts: [2, 3],
       birthCounts: [3],
 
-      dead: '#2CB27A',
-      emerging: '#28CC87',
-      dying: '#D14CFF',
-      alive: '#8D23B2'
+      dead: '#004080',
+      emerging: '#0080FF',
+      dying: '#CCFF66',
+      alive: '#66FF66'
     }, options);
 
+    this.controls = document.getElementsByClassName('controls')[0];
     this.form = document.getElementById('controls-form');
+    this.currentPattern = null;
 
     this.setUpMouseTracking();
+    this.setUpPatterns();
     this.setUpColorPickers();
     this.setUpRuleControls();
     this.setUpStepRateSlider();
@@ -327,12 +347,37 @@ var _class = function () {
 
       this.sim.canvas.addEventListener('click', function () {
         _this.sim.update(true);
+
+        if (_this.currentPattern) {
+          _this.currentPattern = null;
+        }
+      });
+
+      this.sim.canvas.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+        return false;
+      }, false);
+    }
+  }, {
+    key: 'setUpPatterns',
+    value: function setUpPatterns() {
+      var _this2 = this;
+
+      var spaceshipButton = document.getElementById('spaceship-button');
+      spaceshipButton.addEventListener('click', function () {
+        _this2.currentPattern = [[0, 1, 1, 1, 1], [1, 0, 0, 0, 1], [0, 0, 0, 0, 1], [1, 0, 0, 1, 0]];
+
+        _this2.rotateHandler = _this2.sim.canvas.addEventListener('contextmenu', function (e) {
+          e.preventDefault();
+          _this2.currentPattern = _this2.currentPattern.rotate();
+          return false;
+        }, false);
       });
     }
   }, {
     key: 'setUpRuleControls',
     value: function setUpRuleControls() {
-      var _this2 = this;
+      var _this3 = this;
 
       ['survival', 'birth'].forEach(function (ruleName) {
         var ruleControl = document.getElementById(ruleName + '-rule');
@@ -343,7 +388,7 @@ var _class = function () {
             var counts = value.split(',').map(function (el) {
               return parseInt(el);
             });
-            _this2[ruleName + 'Counts'] = counts;
+            _this3[ruleName + 'Counts'] = counts;
           } catch (e) {
             ruleControl.style.border = '1px solid Red';
           }
@@ -353,77 +398,79 @@ var _class = function () {
   }, {
     key: 'setUpColorPickers',
     value: function setUpColorPickers() {
-      var _this3 = this;
+      var _this4 = this;
 
       ['alive', 'dying', 'emerging', 'dead'].forEach(function (colorPickerName) {
         var colorPicker = document.getElementById(colorPickerName + '-color');
-        colorPicker.value = _this3[colorPickerName];
+        colorPicker.value = _this4[colorPickerName];
         colorPicker.addEventListener('click', function () {
-          _this3.form.style.display = 'block';
+          _this4.form.style.display = 'block';
+          _this4.controls.style.opacity = 1;
           colorPicker.addEventListener('focusin', function () {
-            _this3.form.style.display = null;
+            _this4.form.style.display = null;
+            _this4.controls.style.opacity = null;
           });
         });
 
         colorPicker.addEventListener('change', function (event) {
-          _this3[colorPickerName] = event.target.value;
+          _this4[colorPickerName] = event.target.value;
         });
       });
     }
   }, {
     key: 'setUpStepRateSlider',
     value: function setUpStepRateSlider() {
-      var _this4 = this;
+      var _this5 = this;
 
       this.stepRateSlider = document.getElementById('stepRateSlider');
       this.stepRateSlider.value = this.sim.stepRate;
       this.stepRateSlider.addEventListener('input', function (event) {
-        document.getElementById('stepRate').innerText = _this4.stepRateSlider.value;
-        _this4.sim.stepRate = parseInt(_this4.stepRateSlider.value);
+        document.getElementById('stepRate').innerText = _this5.stepRateSlider.value;
+        _this5.sim.stepRate = parseInt(_this5.stepRateSlider.value);
       });
     }
   }, {
     key: 'setUpStepControls',
     value: function setUpStepControls() {
-      var _this5 = this;
+      var _this6 = this;
 
       ['pause', 'play', 'step', 'clear', 'seed'].forEach(function (buttonName) {
-        _this5[buttonName + 'Button'] = document.getElementById(buttonName);
+        _this6[buttonName + 'Button'] = document.getElementById(buttonName);
       });
 
       ['play', 'seed'].forEach(function (buttonName) {
-        _this5[buttonName + 'Button'].style.display = 'none';
+        _this6[buttonName + 'Button'].style.display = 'none';
       });
 
       this.stepButton.classList.add('button-disabled');
 
       var stepButtonClickHandler = function stepButtonClickHandler() {
-        _this5.sim.update();
+        _this6.sim.update();
       };
 
       this.pauseButton.addEventListener('click', function () {
-        _this5.sim.paused = true;
-        _this5.pauseButton.style.display = 'none';
-        _this5.playButton.style.display = 'block';
-        _this5.stepButton.classList.remove('button-disabled');
-        _this5.stepButton.addEventListener('click', stepButtonClickHandler);
+        _this6.sim.paused = true;
+        _this6.pauseButton.style.display = 'none';
+        _this6.playButton.style.display = 'block';
+        _this6.stepButton.classList.remove('button-disabled');
+        _this6.stepButton.addEventListener('click', stepButtonClickHandler);
       });
 
       this.playButton.addEventListener('click', function () {
-        _this5.sim.paused = false;
-        _this5.playButton.style.display = 'none';
-        _this5.pauseButton.style.display = 'block';
-        _this5.stepButton.classList.add('button-disabled');
-        _this5.stepButton.removeEventListener('click', stepButtonClickHandler);
+        _this6.sim.paused = false;
+        _this6.playButton.style.display = 'none';
+        _this6.pauseButton.style.display = 'block';
+        _this6.stepButton.classList.add('button-disabled');
+        _this6.stepButton.removeEventListener('click', stepButtonClickHandler);
       });
 
       this.clearButton.addEventListener('click', function () {
-        _this5.sim.generateGrid();
+        _this6.sim.generateGrid();
       });
 
       this.seedButton.addEventListener('click', function () {
-        _this5.sim.seed();
-        _this5.sim.update();
+        _this6.sim.seed();
+        _this6.sim.update();
       });
     }
   }, {
@@ -506,14 +553,24 @@ var _class = function () {
 
       var iface = this.sim.iface;
 
-      if (fromClick && this.hovered) {
-        this.alive = !this.alive;
-        this.neighbors.forEach(function (cell) {
-          return cell.getAliveNeighbors();
-        });
-        this.neighbors.forEach(function (cell) {
-          return cell.update(true);
-        });
+      if (fromClick) {
+        if (this.hovered) {
+          this.alive = !this.alive;
+          this.neighbors.forEach(function (cell) {
+            return cell.getAliveNeighbors();
+          });
+          this.neighbors.forEach(function (cell) {
+            return cell.update(true);
+          });
+        } else if (this.patternMapped) {
+          this.alive = true;
+          this.neighbors.forEach(function (cell) {
+            return cell.getAliveNeighbors();
+          });
+          this.neighbors.forEach(function (cell) {
+            return cell.update(false);
+          });
+        }
       }
 
       if (this.alive) {
@@ -537,6 +594,8 @@ var _class = function () {
   }, {
     key: 'draw',
     value: function draw() {
+      var _this = this;
+
       var displayX = this.displayX,
           displayY = this.displayY,
           size = this.size,
@@ -561,13 +620,29 @@ var _class = function () {
 
       this.hovered = displayX <= iface.mouseX && iface.mouseX < displayX + size && displayY <= iface.mouseY && iface.mouseY < displayY + size;
 
-      if (this.hovered) {
+      this.patternMapped = false;
+      if (iface.currentPattern) {
+        this.hovered = false;
+        iface.currentPattern.forEach(function (row, rowIdx) {
+          row.forEach(function (cellStatus, colIdx) {
+            var patternOffsetX = iface.mouseX + colIdx * size;
+            var patternOffsetY = iface.mouseY + rowIdx * size;
+            if (displayX <= patternOffsetX && patternOffsetX < displayX + size && displayY <= patternOffsetY && patternOffsetY < displayY + size && cellStatus === 1) {
+              _this.patternMapped = true;
+            }
+          });
+        });
+      }
+
+      var highlighted = this.hovered || this.patternMapped;
+
+      if (highlighted) {
         context.fillStyle = 'white';
         context.fillRect(displayX, displayY, size, size);
       }
 
       context.fillStyle = this.color;
-      context.fillRect(displayX + (this.hovered ? 1 : 0), displayY + (this.hovered ? 1 : 0), size - (this.hovered ? 2 : 0), size - (this.hovered ? 2 : 0));
+      context.fillRect(displayX + (highlighted ? 1 : 0), displayY + (highlighted ? 1 : 0), size - (highlighted ? 2 : 0), size - (highlighted ? 2 : 0));
     }
   }]);
 

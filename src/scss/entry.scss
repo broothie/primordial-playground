@@ -36,5 +36,31 @@ html, body {
   cursor: default;
 }
 
+button {
+  border: 1px solid Black;
+  padding: 3px 5px;
+
+  &:hover {
+    background-color: Gray;
+    color: White;
+
+    &:active {
+      background-color: Black;
+    }
+  }
+
+}
+
+input[type="text"] {
+  width: 60px;
+
+  padding: 1px 5px;
+  border: 1px solid Gray;
+
+  &:active, &:focus {
+    border: 1px solid Black;
+  }
+}
+
 @import 'info.scss';
 @import 'controls.scss';

@@ -15,3 +15,20 @@ Array.prototype.flatten = function() {
 
   return result;
 };
+
+Array.prototype.rotate = function() {
+  // Assumes rectangular matrix
+  const originalWidth = this[0].length;
+  const originalHeight = this.length;
+
+  const array = [];
+  for (let oj = originalWidth - 1; oj >= 0; oj--) {
+    const row = [];
+    for (let oi = 0; oi < originalHeight; oi++) {
+      row.push(this[oi][oj]);
+    }
+    array.push(row);
+  }
+
+  return array;
+};

@@ -13,7 +13,7 @@ export default class {
 
       paused: false,
 
-      seedRatio: 0.08,
+      seedRatio: 0.08, 
 
       width: Math.ceil(window.innerWidth / 10),
       height: Math.ceil(window.innerHeight / 10),
@@ -85,7 +85,7 @@ export default class {
     if (!fromClick) this.cells.forEach(cell => cell.step());
     this.cells.forEach(cell => cell.getAliveNeighbors());
     this.cells.forEach(cell => cell.update(fromClick));
-    this.generation++;
+    if (!fromClick) this.generation++;
   }
 
   draw() {

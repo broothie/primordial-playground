@@ -82,6 +82,22 @@ html, body {
     html a:hover, body a:hover {
       text-decoration: underline; }
 
+button {
+  border: 1px solid Black;
+  padding: 3px 5px; }
+  button:hover {
+    background-color: Gray;
+    color: White; }
+    button:hover:active {
+      background-color: Black; }
+
+input[type="text"] {
+  width: 60px;
+  padding: 1px 5px;
+  border: 1px solid Gray; }
+  input[type="text"]:active, input[type="text"]:focus {
+    border: 1px solid Black; }
+
 .info {
   position: fixed;
   padding: 15px 20px;
@@ -181,9 +197,5 @@ html, body {
   display: flex;
   flex-flow: column;
   justify-content: space-around; }
-  .rule-controls div input {
-    width: 60px;
-    padding: 1px 5px;
-    border: 1px solid Gray; }
 
 /*# sourceMappingURL=bundle.css.map */

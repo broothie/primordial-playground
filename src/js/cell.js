@@ -26,10 +26,16 @@ export default class {
   update(fromClick = false) {
     const iface = this.sim.iface;
 
-    if (fromClick && this.hovered) {
-      this.alive = !this.alive;
-      this.neighbors.forEach(cell => cell.getAliveNeighbors());
-      this.neighbors.forEach(cell => cell.update(true));
+    if (fromClick) {
+      if (this.hovered) {
+        this.alive = !this.alive;
+        this.neighbors.forEach(cell => cell.getAliveNeighbors());
+        this.neighbors.forEach(cell => cell.update(true));
+      } else if (this.patternMapped) {
+        this.alive = true;
+        this.neighbors.forEach(cell => cell.getAliveNeighbors());
+        this.neighbors.forEach(cell => cell.update(false));
+      }
     }
 
     if (this.alive) {
@@ -73,7 +79,27 @@ export default class {
       (displayY <= iface.mouseY && iface.mouseY < displayY + size)
     );
 
-    if (this.hovered) {
+    this.patternMapped = false;
+    if (iface.currentPattern) {
+      this.hovered = false;
+      iface.currentPattern.forEach((row, rowIdx) => {
+        row.forEach((cellStatus, colIdx) => {
+          const patternOffsetX = iface.mouseX + (colIdx * size);
+          const patternOffsetY = iface.mouseY + (rowIdx * size);
+          if (
+            (displayX <= patternOffsetX && patternOffsetX < displayX + size) &&
+            (displayY <= patternOffsetY && patternOffsetY < displayY + size) &&
+            cellStatus === 1
+          ) {
+            this.patternMapped = true;
+          }
+        });
+      });
+    }
+
+    const highlighted = this.hovered || this.patternMapped;
+
+    if (highlighted) {
       context.fillStyle = 'white';
       context.fillRect(
         displayX,
@@ -85,10 +111,10 @@ export default class {
 
     context.fillStyle = this.color;
     context.fillRect(
-      displayX + (this.hovered ? 1 : 0),
-      displayY + (this.hovered ? 1 : 0),
-      size - (this.hovered ? 2 : 0),
-      size - (this.hovered ? 2 : 0)
+      displayX + (highlighted ? 1 : 0),
+      displayY + (highlighted ? 1 : 0),
+      size - (highlighted ? 2 : 0),
+      size - (highlighted ? 2 : 0)
     );
   }
 }

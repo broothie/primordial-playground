@@ -12,9 +12,12 @@ export default class {
       alive: '#66FF66'
     }, options);
 
+    this.controls = document.getElementsByClassName('controls')[0];
     this.form = document.getElementById('controls-form');
+    this.currentPattern = null;
 
     this.setUpMouseTracking();
+    this.setUpPatterns();
     this.setUpColorPickers();
     this.setUpRuleControls();
     this.setUpStepRateSlider();
@@ -30,7 +33,35 @@ export default class {
 
     this.sim.canvas.addEventListener('click', () => {
       this.sim.update(true);
+
+      if (this.currentPattern) {
+        this.currentPattern = null;
+      }
     });
+
+    this.sim.canvas.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      return false;
+    }, false);
+  }
+
+  setUpPatterns() {
+    const spaceshipButton = document.getElementById('spaceship-button');
+    spaceshipButton.addEventListener('click', () => {
+      this.currentPattern = [
+        [0, 1, 1, 1, 1],
+        [1, 0, 0, 0, 1],
+        [0, 0, 0, 0, 1],
+        [1, 0, 0, 1, 0]
+      ];
+
+      this.rotateHandler = this.sim.canvas.addEventListener('contextmenu', e => {
+        e.preventDefault();
+        this.currentPattern = this.currentPattern.rotate();
+        return false;
+      }, false);
+    });
+
   }
 
   setUpRuleControls() {
@@ -55,8 +86,10 @@ export default class {
       colorPicker.value = this[colorPickerName];
       colorPicker.addEventListener('click', () => {
         this.form.style.display = 'block';
+        this.controls.style.opacity = 1;
         colorPicker.addEventListener('focusin', () => {
           this.form.style.display = null;
+          this.controls.style.opacity = null;
         });
       });
 
