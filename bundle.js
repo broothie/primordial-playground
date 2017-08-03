@@ -109,8 +109,10 @@ Array.prototype.flatten = function () {
   return result;
 };
 
+/*
+ * Assumes rectangular matrix
+ */
 Array.prototype.rotate = function () {
-  // Assumes rectangular matrix
   var originalWidth = this[0].length;
   var originalHeight = this.length;
 
