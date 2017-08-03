@@ -217,7 +217,9 @@ input[type="text"] {
 #pattern-buttons {
   display: flex;
   flex-flow: column;
-  height: 120px;
+  height: 250px;
   overflow-y: scroll; }
+  #pattern-buttons button {
+    min-height: 20px; }
 
 /*# sourceMappingURL=bundle.css.map */
