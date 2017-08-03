@@ -7,97 +7,100 @@
     <title>Conway's Game of Life</title>
   </head>
   <body>
-    <section class="info">
-      <h1><a href="index.html">Conway's Game of Life</a></h1>
+    <div class="mouseover-hide">hide</div>
+    <main>
+      <section class="info">
+        <h1><a href="index.html">Conway's Game of Life</a></h1>
 
-      <article>
-        <a href="https://www.math.princeton.edu/directory/john-conway">John Conway</a>'s
-        <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Game of Life</a>
-        is a "zero-player game" based on the following rules for a cellular automaton:
+        <article>
+          <a href="https://www.math.princeton.edu/directory/john-conway">John Conway</a>'s
+          <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Game of Life</a>
+          is a "zero-player game" based on the following rules for a cellular automaton:
 
-        <ol>
-          <li>Any live cell with fewer than two live neighbors dies, as if caused by underpopulation.</li>
-          <li>Any live cell with <span>two or three</span> live neighbors lives on to the next generation.</li>
-          <li>Any live cell with more than three live neighbors dies, as if by overpopulation.</li>
-          <li>Any dead cell with <span>exactly three</span> live neighbors becomes a live cell, as if by reproduction.</li>
-        </ol>
+          <ol>
+            <li>Any live cell with fewer than two live neighbors dies, as if caused by underpopulation.</li>
+            <li>Any live cell with <span>two or three</span> live neighbors lives on to the next generation.</li>
+            <li>Any live cell with more than three live neighbors dies, as if by overpopulation.</li>
+            <li>Any dead cell with <span>exactly three</span> live neighbors becomes a live cell, as if by reproduction.</li>
+          </ol>
 
-        Check the code out on
-        <a href="https://github.com/boothandrewd/conways-gol/#readme">GitHub</a>.
-      </article>
-    </section>
+          Check the code out on
+          <a href="https://github.com/boothandrewd/conways-gol/#readme">GitHub</a>.
+        </article>
+      </section>
 
-    <section class="controls">
-      <form id="controls-form">
-        <div>
-          <button id="spaceship-button" type="button">Spaceship</button>
-        </div>
+      <section class="controls">
+        <form id="controls-form">
+          <div>
+            <button id="spaceship-button" type="button">Spaceship</button>
+          </div>
 
-        <hr/>
+          <hr/>
 
-        <div class="rule-status-section">
-          <div class="status-colors">
-            Cell Colors:
-            <div>
-              <input id="alive-color" type="color"/>
-              <label for="alive-color">Alive</label>
+          <div class="rule-status-section">
+            <div class="status-colors">
+              Cell Colors:
+              <div>
+                <input id="alive-color" type="color"/>
+                <label for="alive-color">Alive</label>
+              </div>
+              <div>
+                <input id="dying-color" type="color"/>
+                <label for="dying-color">Dying</label>
+              </div>
+              <div>
+                <input id="emerging-color" type="color"/>
+                <label for="emerging-color">Emerging</label>
+              </div>
+              <div>
+                <input id="dead-color" type="color"/>
+                <label for="dead-color">Dead</label>
+              </div>
             </div>
-            <div>
-              <input id="dying-color" type="color"/>
-              <label for="dying-color">Dying</label>
-            </div>
-            <div>
-              <input id="emerging-color" type="color"/>
-              <label for="emerging-color">Emerging</label>
-            </div>
-            <div>
-              <input id="dead-color" type="color"/>
-              <label for="dead-color">Dead</label>
+
+            <div class="rule-controls">
+              <div>
+                Survival rule:
+                <input id="survival-rule" type="text" value="2,3">
+                neighbors
+              </div>
+              <div>
+                Birth rule:
+                <input id="birth-rule" type="text" value="3">
+                neighbors
+              </div>
             </div>
           </div>
 
-          <div class="rule-controls">
-            <div>
-              Survival rule:
-              <input id="survival-rule" type="text" value="2,3">
-              neighbors
-            </div>
-            <div>
-              Birth rule:
-              <input id="birth-rule" type="text" value="3">
-              neighbors
-            </div>
+          <hr/>
+
+          <div class="step-rate">
+            <label for="stepRate">Step Rate: <span id="stepRate">12</span></label>
+            <input id="stepRateSlider" type="range" value="12" min="1" max="300" step="1"/>
           </div>
-        </div>
 
-        <hr/>
+          <hr/>
+        </form>
 
-        <div class="step-rate">
-          <label for="stepRate">Step Rate: <span id="stepRate">12</span></label>
-          <input id="stepRateSlider" type="range" value="12" min="1" max="300" step="1"/>
-        </div>
+        <footer class="closed-controls">
+          <div class="step-controls">
+            <img id="pause" src="assets/img/pause-bars.png" alt="pause">
+            <img id="play" src="assets/img/play-button.png" alt="play">
+            <img id="step" src="assets/img/step-forward.png" alt="step">
+            <img id="clear" src="assets/img/rubbish-bin-delete-button.png" alt="clear">
+            <img id="seed" src="assets/img/coffee-beans.png" alt="seed">
+          </div>
 
-        <hr/>
-      </form>
-
-      <footer class="closed-controls">
-        <div class="step-controls">
-          <img id="pause" src="assets/img/pause-bars.png" alt="pause">
-          <img id="play" src="assets/img/play-button.png" alt="play">
-          <img id="step" src="assets/img/step-forward.png" alt="step">
-          <img id="clear" src="assets/img/rubbish-bin-delete-button.png" alt="clear">
-          <img id="seed" src="assets/img/coffee-beans.png" alt="seed">
-        </div>
-
-        <div class="hud">
-          <span>
-            <p>Population:</p><span id="population-count"></span>
-          </span>
-          <span>
-            <p>Generation:</p><span id="generation-count">0</span>
-          </span>
-        </div>
-      </footer>
-    </section>
+          <div class="hud">
+            <span>
+              <p>Population:</p><span id="population-count"></span>
+            </span>
+            <span>
+              <p>Generation:</p><span id="generation-count">0</span>
+            </span>
+          </div>
+        </footer>
+      </section>
+    </main>
   </body>
 </html>

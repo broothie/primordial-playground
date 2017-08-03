@@ -98,6 +98,22 @@ input[type="text"] {
   input[type="text"]:active, input[type="text"]:focus {
     border: 1px solid Black; }
 
+.mouseover-hide {
+  position: fixed;
+  padding: 15px 20px;
+  border: 1px solid WhiteSmoke;
+  background-color: White;
+  opacity: 0.8;
+  cursor: default;
+  left: 15px;
+  bottom: 15px;
+  padding: 10px; }
+  .mouseover-hide:hover + main {
+    display: none; }
+  .mouseover-hide:hover {
+    cursor: none;
+    opacity: 0; }
+
 .info {
   position: fixed;
   padding: 15px 20px;

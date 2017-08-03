@@ -62,5 +62,22 @@ input[type="text"] {
   }
 }
 
+.mouseover-hide {
+  @include overlay;
+  left: 15px;
+  bottom: 15px;
+
+  padding: 10px;
+
+  &:hover + main {
+    display: none;
+  }
+
+  &:hover {
+    cursor: none;
+    opacity: 0;
+  }
+}
+
 @import 'info.scss';
 @import 'controls.scss';
