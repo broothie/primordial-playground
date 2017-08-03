@@ -214,4 +214,10 @@ input[type="text"] {
   flex-flow: column;
   justify-content: space-around; }
 
+#pattern-buttons {
+  display: flex;
+  flex-flow: column;
+  height: 120px;
+  overflow-y: scroll; }
+
 /*# sourceMappingURL=bundle.css.map */

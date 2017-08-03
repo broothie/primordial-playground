@@ -303,6 +303,12 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _patterns = __webpack_require__(5);
+
+var _patterns2 = _interopRequireDefault(_patterns);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var _class = function () {
@@ -352,12 +358,16 @@ var _class = function () {
 
         if (_this.currentPattern) {
           _this.currentPattern = null;
-          _this.sim.canvas.removeEventListener('contextmenu', _this.rotateHandler);
         }
       });
 
       this.sim.canvas.addEventListener('contextmenu', function (e) {
         e.preventDefault();
+
+        if (_this.currentPattern) {
+          _this.currentPattern = _this.currentPattern.rotate();
+        }
+
         return false;
       }, false);
     }
@@ -366,18 +376,20 @@ var _class = function () {
     value: function setUpPatterns() {
       var _this2 = this;
 
-      var spaceshipButton = document.getElementById('spaceship-button');
-      spaceshipButton.addEventListener('click', function () {
-        _this2.currentPattern = [[0, 1, 1, 1, 1], [1, 0, 0, 0, 1], [0, 0, 0, 0, 1], [1, 0, 0, 1, 0]];
+      var _loop = function _loop(patternName) {
+        var patternButtons = document.getElementById('pattern-buttons');
+        var patternButton = document.createElement('button');
+        patternButton.innerText = patternName;
+        patternButtons.appendChild(patternButton);
+        patternButton.addEventListener('click', function (event) {
+          event.preventDefault();
+          _this2.currentPattern = _patterns2.default[patternName];
+        });
+      };
 
-        _this2.rotateHandler = function (e) {
-          e.preventDefault();
-          _this2.currentPattern = _this2.currentPattern.rotate();
-          return false;
-        };
-
-        _this2.sim.canvas.addEventListener('contextmenu', _this2.rotateHandler, false);
-      });
+      for (var patternName in _patterns2.default) {
+        _loop(patternName);
+      }
     }
   }, {
     key: 'setUpRuleControls',
@@ -427,11 +439,11 @@ var _class = function () {
     value: function setUpStepRateSlider() {
       var _this5 = this;
 
-      this.stepRateSlider = document.getElementById('stepRateSlider');
-      this.stepRateSlider.value = this.sim.stepRate;
-      this.stepRateSlider.addEventListener('input', function (event) {
-        document.getElementById('stepRate').innerText = _this5.stepRateSlider.value;
-        _this5.sim.stepRate = parseInt(_this5.stepRateSlider.value);
+      var stepRateSlider = document.getElementById('stepRateSlider');
+      stepRateSlider.value = this.sim.stepRate;
+      stepRateSlider.addEventListener('input', function (event) {
+        document.getElementById('stepRate').innerText = stepRateSlider.value;
+        _this5.sim.stepRate = parseInt(stepRateSlider.value);
       });
     }
   }, {
@@ -655,6 +667,24 @@ var _class = function () {
 }();
 
 exports.default = _class;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  'Spaceship': [[0, 1, 1, 1, 1], [1, 0, 0, 0, 1], [0, 0, 0, 0, 1], [1, 0, 0, 1, 0]],
+  'Gosper Glider Gun': [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1], [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
+  'Revolver': [[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], [1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1], [0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0], [0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0], [1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1], [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]],
+  'Dart': [[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0], [0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0], [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1], [0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0]]
+
+};
 
 /***/ })
 /******/ ]);
