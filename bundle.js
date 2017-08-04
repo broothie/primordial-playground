@@ -153,7 +153,7 @@ var _interface = __webpack_require__(3);
 
 var _interface2 = _interopRequireDefault(_interface);
 
-var _cell = __webpack_require__(4);
+var _cell = __webpack_require__(7);
 
 var _cell2 = _interopRequireDefault(_cell);
 
@@ -169,9 +169,8 @@ var _class = function () {
     this.context = canvas.getContext('2d');
 
     Object.assign(this, {
-      loopRate: 1000,
-      stepRate: 12,
-      frameRate: 60,
+      loopRate: 500,
+      stepRate: 50,
 
       paused: false,
 
@@ -190,6 +189,7 @@ var _class = function () {
   _createClass(_class, [{
     key: 'generateGrid',
     value: function generateGrid() {
+      // Fill grid with cells
       var grid = [];
       for (var i = 0; i < this.height; i++) {
         var row = [];
@@ -199,6 +199,7 @@ var _class = function () {
         grid.push(row);
       }
 
+      // Give cells references to neighbors
       for (var _i = 0; _i < this.height; _i++) {
         for (var _j = 0; _j < this.width; _j++) {
           for (var k = -1; k <= 1; k++) {
@@ -211,7 +212,7 @@ var _class = function () {
       }
 
       this.grid = grid;
-      this.cells = this.grid.flatten();
+      this.cells = this.grid.flatten(); // Cells is a 1d array of all the cells
 
       this.generation = 0;
     }
@@ -227,27 +228,25 @@ var _class = function () {
   }, {
     key: 'run',
     value: function run() {
+      // Initialize loop for simulation update
       this.loopCount = 0;
-      this.frameCount = 0;
+      this.loopId = setInterval(this.loop.bind(this), 1000 / this.loopRate);
 
-      this.loopId = setInterval(this.loop.bind(this), 300 / this.loopRate);
+      // Start rendering
+      requestAnimationFrame(this.draw.bind(this));
     }
   }, {
     key: 'loop',
     value: function loop() {
+      // Simulation loop
       var loopCount = this.loopCount,
           loopRate = this.loopRate,
           stepRate = this.stepRate,
-          frameRate = this.frameRate,
           paused = this.paused;
 
 
       if (loopCount % Math.floor(loopRate / stepRate) === 0) {
         if (!paused) this.update();
-      }
-
-      if (loopCount % Math.floor(loopRate / frameRate) === 0) {
-        this.draw();
       }
 
       this.loopCount++;
@@ -257,11 +256,11 @@ var _class = function () {
     value: function update() {
       var fromClick = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
+      // 2 types of update: one from loop, one from manual cell manipulation
+
+      // First, advance all cell states
       if (!fromClick) this.cells.forEach(function (cell) {
         return cell.step();
-      });
-      this.cells.forEach(function (cell) {
-        return cell.getAliveNeighbors();
       });
       this.cells.forEach(function (cell) {
         return cell.update(fromClick);
@@ -284,7 +283,7 @@ var _class = function () {
 
       this.iface.draw();
 
-      this.frameCount++;
+      requestAnimationFrame(this.draw.bind(this));
     }
   }, {
     key: 'kill',
@@ -311,11 +310,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _patterns = __webpack_require__(5);
+var _patterns = __webpack_require__(4);
 
 var _patterns2 = _interopRequireDefault(_patterns);
 
-var _pattern_parser = __webpack_require__(7);
+var _pattern_parser = __webpack_require__(5);
 
 var _pattern_parser2 = _interopRequireDefault(_pattern_parser);
 
@@ -588,157 +587,6 @@ exports.default = _class;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var _class = function () {
-  function _class(sim, options) {
-    _classCallCheck(this, _class);
-
-    this.sim = sim;
-
-    Object.assign(this, {
-      x: 0,
-      y: 0,
-      size: 10,
-      color: this.sim.iface.dead,
-      alive: false,
-      neighbors: []
-    }, options);
-
-    this.displayX = this.x * this.size;
-    this.displayY = this.y * this.size;
-  }
-
-  _createClass(_class, [{
-    key: 'step',
-    value: function step() {
-      this.alive = this.willLive;
-    }
-  }, {
-    key: 'getAliveNeighbors',
-    value: function getAliveNeighbors() {
-      this.aliveNeighbors = this.neighbors.filter(function (cell) {
-        return cell.alive;
-      }).length;
-    }
-  }, {
-    key: 'update',
-    value: function update() {
-      var fromClick = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-
-      var iface = this.sim.iface;
-
-      if (fromClick) {
-        if (this.hovered) {
-          this.alive = !this.alive;
-          this.neighbors.forEach(function (cell) {
-            return cell.getAliveNeighbors();
-          });
-          this.neighbors.forEach(function (cell) {
-            return cell.update(true);
-          });
-        } else if (this.patternMapped) {
-          this.alive = true;
-          this.neighbors.forEach(function (cell) {
-            return cell.getAliveNeighbors();
-          });
-          this.neighbors.forEach(function (cell) {
-            return cell.update(false);
-          });
-        }
-      }
-
-      if (this.alive) {
-        if (iface.survivalCounts.includes(this.aliveNeighbors)) {
-          // Survive
-          this.willLive = true;
-        } else {
-          // Die
-          this.willLive = false;
-        }
-      } else {
-        if (iface.birthCounts.includes(this.aliveNeighbors)) {
-          // Birth
-          this.willLive = true;
-        } else {
-          // Dead
-          this.willLive = false;
-        }
-      }
-    }
-  }, {
-    key: 'draw',
-    value: function draw() {
-      var _this = this;
-
-      var displayX = this.displayX,
-          displayY = this.displayY,
-          size = this.size,
-          _sim = this.sim,
-          context = _sim.context,
-          iface = _sim.iface;
-
-
-      if (this.alive) {
-        if (this.willLive) {
-          this.color = iface.alive;
-        } else {
-          this.color = iface.dying;
-        }
-      } else {
-        if (this.willLive) {
-          this.color = iface.emerging;
-        } else {
-          this.color = iface.dead;
-        }
-      }
-
-      this.hovered = displayX <= iface.mouseX && iface.mouseX < displayX + size && displayY <= iface.mouseY && iface.mouseY < displayY + size;
-
-      this.patternMapped = false;
-      if (iface.currentPattern) {
-        this.hovered = false;
-        iface.currentPattern.forEach(function (row, rowIdx) {
-          row.forEach(function (cellStatus, colIdx) {
-            var patternOffsetX = iface.mouseX + colIdx * size;
-            var patternOffsetY = iface.mouseY + rowIdx * size;
-            if (displayX <= patternOffsetX && patternOffsetX < displayX + size && displayY <= patternOffsetY && patternOffsetY < displayY + size && cellStatus === 1) {
-              _this.patternMapped = true;
-            }
-          });
-        });
-      }
-
-      var highlighted = this.hovered || this.patternMapped;
-
-      if (highlighted) {
-        context.fillStyle = 'Black';
-        context.fillRect(displayX, displayY, size, size);
-      }
-
-      context.fillStyle = this.color;
-      context.fillRect(displayX + (highlighted ? 1 : 0), displayY + (highlighted ? 1 : 0), size - (highlighted ? 2 : 0), size - (highlighted ? 2 : 0));
-    }
-  }]);
-
-  return _class;
-}();
-
-exports.default = _class;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 exports.default = {
   'Spaceship': 'b5o$o4bo$5bo$o3bob!',
   'Glider': 'bob$2bo$3o!',
@@ -768,29 +616,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = {
-  'Classic': ['#999999', '#999999', '#FFFFFF', '#FFFFFF'],
-  'Aqua': ['#004080', '#0080FF', '#CCFF66', '#66FF66'],
-  'Barney': ['#2CB27A', '#28CC87', '#D14CFF', '#8D23B2'],
-  'Flappy Bird': ['#4EC0CA', '#A5C55C', '#FE3800', '#F6B833'],
-  'Electric': ['#B3B3B3', '#FFFF66', '#00FFFF', '#008080'],
-  'Swayed': ['#6F00CA', '#800040', '#000000', '#804000'],
-  'Rick and Morty': ['#B5E4F9', '#FDFDFD', '#824816', '#FBFF6E'],
-  'App Academy': ['#FFFFFF', '#FFFFFF', '#FF3850', '#FF0000'],
-  'UB': ['#005B9D', '#62A7D2', '#000000', '#FFFFFF']
-};
-
-/***/ }),
-/* 7 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -843,6 +669,173 @@ exports.default = function (patternCode) {
 
   return grid;
 };
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  'Classic': ['#999999', '#999999', '#FFFFFF', '#FFFFFF'],
+  'Aqua': ['#004080', '#0080FF', '#CCFF66', '#66FF66'],
+  'Barney': ['#2CB27A', '#28CC87', '#D14CFF', '#8D23B2'],
+  'Flappy Bird': ['#4EC0CA', '#A5C55C', '#FE3800', '#F6B833'],
+  'Electric': ['#B3B3B3', '#FFFF66', '#00FFFF', '#008080'],
+  'Swayed': ['#6F00CA', '#800040', '#000000', '#804000'],
+  'Rick and Morty': ['#B5E4F9', '#FDFDFD', '#824816', '#FBFF6E'],
+  'App Academy': ['#FFFFFF', '#FFFFFF', '#FF3850', '#FF0000'],
+  'UB': ['#005B9D', '#62A7D2', '#000000', '#FFFFFF']
+};
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var _class = function () {
+  function _class(sim, options) {
+    _classCallCheck(this, _class);
+
+    this.sim = sim;
+
+    Object.assign(this, {
+      x: 0,
+      y: 0,
+      size: 10,
+      color: this.sim.iface.dead,
+      alive: false,
+      neighbors: []
+    }, options);
+
+    this.displayX = this.x * this.size;
+    this.displayY = this.y * this.size;
+  }
+
+  _createClass(_class, [{
+    key: 'step',
+    value: function step() {
+      this.alive = this.willLive;
+    }
+  }, {
+    key: 'getAliveNeighbors',
+    value: function getAliveNeighbors() {
+      this.aliveNeighbors = this.neighbors.filter(function (cell) {
+        return cell.alive;
+      }).length;
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+      var _this = this;
+
+      var fromClick = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+      var iface = this.sim.iface;
+      this.getAliveNeighbors();
+
+      if (fromClick) {
+        if (this.hovered) {
+          this.alive = !this.alive;
+        } else if (this.patternMapped) {
+          this.alive = true;
+        }
+        this.neighbors.forEach(function (cell) {
+          return cell.update(_this.hovered);
+        });
+      }
+
+      if (this.alive) {
+        if (iface.survivalCounts.includes(this.aliveNeighbors)) {
+          // Survive
+          this.willLive = true;
+        } else {
+          // Die
+          this.willLive = false;
+        }
+      } else {
+        if (iface.birthCounts.includes(this.aliveNeighbors)) {
+          // Birth
+          this.willLive = true;
+        } else {
+          // Dead
+          this.willLive = false;
+        }
+      }
+    }
+  }, {
+    key: 'draw',
+    value: function draw() {
+      var _this2 = this;
+
+      var displayX = this.displayX,
+          displayY = this.displayY,
+          size = this.size,
+          _sim = this.sim,
+          context = _sim.context,
+          iface = _sim.iface;
+
+
+      if (this.alive) {
+        if (this.willLive) {
+          this.color = iface.alive;
+        } else {
+          this.color = iface.dying;
+        }
+      } else {
+        if (this.willLive) {
+          this.color = iface.emerging;
+        } else {
+          this.color = iface.dead;
+        }
+      }
+
+      this.hovered = displayX <= iface.mouseX && iface.mouseX < displayX + size && displayY <= iface.mouseY && iface.mouseY < displayY + size;
+
+      this.patternMapped = false;
+      if (iface.currentPattern) {
+        this.hovered = false;
+        iface.currentPattern.forEach(function (row, rowIdx) {
+          row.forEach(function (cellStatus, colIdx) {
+            var patternOffsetX = iface.mouseX + colIdx * size;
+            var patternOffsetY = iface.mouseY + rowIdx * size;
+            if (displayX <= patternOffsetX && patternOffsetX < displayX + size && displayY <= patternOffsetY && patternOffsetY < displayY + size && cellStatus === 1) {
+              _this2.patternMapped = true;
+            }
+          });
+        });
+      }
+
+      var highlighted = this.hovered || this.patternMapped;
+
+      if (highlighted) {
+        context.fillStyle = 'Black';
+        context.fillRect(displayX, displayY, size, size);
+      }
+
+      context.fillStyle = this.color;
+      context.fillRect(displayX + (highlighted ? 1 : 0), displayY + (highlighted ? 1 : 0), size - (highlighted ? 2 : 0), size - (highlighted ? 2 : 0));
+    }
+  }]);
+
+  return _class;
+}();
+
+exports.default = _class;
 
 /***/ })
 /******/ ]);
