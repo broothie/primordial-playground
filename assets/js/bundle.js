@@ -331,6 +331,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var _class = function () {
   function _class(sim, options) {
+    var _this = this;
+
     _classCallCheck(this, _class);
 
     this.sim = sim;
@@ -341,6 +343,7 @@ var _class = function () {
     }, options);
 
     this.body = document.getElementsByTagName('body')[0];
+    this.info = document.getElementsByClassName('info')[0];
     this.controls = document.getElementsByClassName('controls')[0];
     this.form = document.getElementById('controls-form');
 
@@ -367,12 +370,12 @@ var _class = function () {
     // Set up opening modal
     var infoArticle = document.querySelector('.info > article');
     infoArticle.style.display = 'block';
-    infoArticle.style.opacity = 1;
+    this.info.style.opacity = '1';
     infoArticle.style.width = '320px';
 
     var firstClickHandler = function firstClickHandler(event) {
       infoArticle.style.display = null;
-      infoArticle.style.opacity = null;
+      _this.info.style.opacity = null;
       infoArticle.style.width = null;
       document.removeEventListener('click', firstClickHandler);
     };
@@ -388,24 +391,24 @@ var _class = function () {
   }, {
     key: 'setUpMouseTracking',
     value: function setUpMouseTracking() {
-      var _this = this;
+      var _this2 = this;
 
       // Set up mouse position tracking
       this.sim.canvas.addEventListener('mousemove', function (_ref) {
         var clientX = _ref.clientX,
             clientY = _ref.clientY;
 
-        _this.mouseX = clientX;
-        _this.mouseY = clientY;
+        _this2.mouseX = clientX;
+        _this2.mouseY = clientY;
       });
 
       // Set up click handler
       this.sim.canvas.addEventListener('click', function () {
-        _this.sim.update(true);
+        _this2.sim.update(true);
 
         // Clear pattern if there is one
-        if (_this.currentPattern) {
-          _this.clearPattern();
+        if (_this2.currentPattern) {
+          _this2.clearPattern();
         }
       });
 
@@ -414,8 +417,8 @@ var _class = function () {
         e.preventDefault();
 
         // Rotate patter if there is one
-        if (_this.currentPattern) {
-          _this.currentPattern = _this.currentPattern.rotate();
+        if (_this2.currentPattern) {
+          _this2.currentPattern = _this2.currentPattern.rotate();
         }
 
         return false;
@@ -424,12 +427,12 @@ var _class = function () {
   }, {
     key: 'setUpPatterns',
     value: function setUpPatterns() {
-      var _this2 = this;
+      var _this3 = this;
 
       // Remove current pattern with escape key
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
-          _this2.clearPattern();
+          _this3.clearPattern();
         }
       });
 
@@ -449,8 +452,8 @@ var _class = function () {
           event.preventDefault();
 
           // Store pattern in pattern holder
-          _this2.currentPattern = (0, _patterns.patternParser)(_patterns.patterns[patternName]);
-          _this2.body.style.cursor = 'none';
+          _this3.currentPattern = (0, _patterns.patternParser)(_patterns.patterns[patternName]);
+          _this3.body.style.cursor = 'none';
         });
       };
 
@@ -467,7 +470,7 @@ var _class = function () {
   }, {
     key: 'setUpRuleControls',
     value: function setUpRuleControls() {
-      var _this3 = this;
+      var _this4 = this;
 
       // Add event handler to each rule input box
       ['survival', 'birth'].forEach(function (ruleName) {
@@ -477,20 +480,20 @@ var _class = function () {
           var counts = event.target.value.split(',').map(function (el) {
             return parseInt(el);
           });
-          _this3[ruleName + 'Counts'] = counts;
+          _this4[ruleName + 'Counts'] = counts;
         });
       });
     }
   }, {
     key: 'setColor',
     value: function setColor(schemeName) {
-      var _this4 = this;
+      var _this5 = this;
 
       // Color setting helper method
       var colorScheme = _colors2.default[schemeName];
       ['dead', 'emerging', 'dying', 'alive'].forEach(function (statusName, idx) {
         // Set interface value to color scheme color
-        _this4[statusName] = colorScheme[idx];
+        _this5[statusName] = colorScheme[idx];
         var colorPicker = document.getElementById(statusName + '-color');
         colorPicker.value = colorScheme[idx];
       });
@@ -498,7 +501,7 @@ var _class = function () {
   }, {
     key: 'setUpColorSchemes',
     value: function setUpColorSchemes() {
-      var _this5 = this;
+      var _this6 = this;
 
       var schemeList = document.querySelector('.color-schemes > ul');
       Object.keys(_colors2.default).forEach(function (colorScheme) {
@@ -513,46 +516,46 @@ var _class = function () {
         // Set link text and handler
         schemeLink.innerText = colorScheme;
         schemeLi.addEventListener('click', function (e) {
-          _this5.setColor(colorScheme);
+          _this6.setColor(colorScheme);
         });
       });
     }
   }, {
     key: 'setUpColorPickers',
     value: function setUpColorPickers() {
-      var _this6 = this;
+      var _this7 = this;
 
       ['alive', 'dying', 'emerging', 'dead'].forEach(function (colorPickerName) {
         // Set color picker color
         var colorPicker = document.getElementById(colorPickerName + '-color');
-        colorPicker.value = _this6[colorPickerName];
+        colorPicker.value = _this7[colorPickerName];
 
         // Add open handler to control how controls overlay appears during
         //  color picking
         colorPicker.addEventListener('click', function () {
           // Keep form up during color pick
-          _this6.form.style.display = 'block';
-          _this6.controls.style.opacity = 1;
+          _this7.form.style.display = 'block';
+          _this7.controls.style.opacity = 1;
 
           // Add focus handler, which removes itself after use
           var focusHandler = function focusHandler() {
-            _this6.form.style.display = null;
-            _this6.controls.style.opacity = null;
+            _this7.form.style.display = null;
+            _this7.controls.style.opacity = null;
             colorPicker.removeEventListener('focusin', focusHandler);
           };
-          colorPicker.addEventListener('focusin', focusHandler.bind(_this6));
+          colorPicker.addEventListener('focusin', focusHandler.bind(_this7));
         });
 
         // Add color pick handler
         colorPicker.addEventListener('change', function (event) {
-          _this6[colorPickerName] = event.target.value;
+          _this7[colorPickerName] = event.target.value;
         });
       });
     }
   }, {
     key: 'setUpStepRateSlider',
     value: function setUpStepRateSlider() {
-      var _this7 = this;
+      var _this8 = this;
 
       // Set step rate to reflect initial rate
       var stepRateSlider = document.getElementById('stepRateSlider');
@@ -563,57 +566,57 @@ var _class = function () {
       // Add input handler
       stepRateSlider.addEventListener('input', function (event) {
         document.getElementById('stepRate').innerText = stepRateSlider.value;
-        _this7.sim.stepRate = parseInt(stepRateSlider.value);
+        _this8.sim.stepRate = parseInt(stepRateSlider.value);
       });
     }
   }, {
     key: 'setUpStepControls',
     value: function setUpStepControls() {
-      var _this8 = this;
+      var _this9 = this;
 
       // Get each control
       ['pause', 'play', 'step', 'clear', 'seed'].forEach(function (buttonName) {
-        _this8[buttonName + 'Button'] = document.getElementById(buttonName);
+        _this9[buttonName + 'Button'] = document.getElementById(buttonName);
       });
 
       // Hide play and seed buttons initially, and disable step button
       ['play', 'seed'].forEach(function (buttonName) {
-        _this8[buttonName + 'Button'].style.display = 'none';
+        _this9[buttonName + 'Button'].style.display = 'none';
       });
       this.stepButton.classList.add('button-disabled');
 
       // Run update on step
       var stepButtonClickHandler = function stepButtonClickHandler() {
-        _this8.sim.update();
+        _this9.sim.update();
       };
 
       // Pause and change display on pause button click
       this.pauseButton.addEventListener('click', function () {
-        _this8.sim.paused = true;
-        _this8.pauseButton.style.display = 'none';
-        _this8.playButton.style.display = 'block';
-        _this8.stepButton.classList.remove('button-disabled');
-        _this8.stepButton.addEventListener('click', stepButtonClickHandler);
+        _this9.sim.paused = true;
+        _this9.pauseButton.style.display = 'none';
+        _this9.playButton.style.display = 'block';
+        _this9.stepButton.classList.remove('button-disabled');
+        _this9.stepButton.addEventListener('click', stepButtonClickHandler);
       });
 
       // Play and change display on play butto click
       this.playButton.addEventListener('click', function () {
-        _this8.sim.paused = false;
-        _this8.playButton.style.display = 'none';
-        _this8.pauseButton.style.display = 'block';
-        _this8.stepButton.classList.add('button-disabled');
-        _this8.stepButton.removeEventListener('click', stepButtonClickHandler);
+        _this9.sim.paused = false;
+        _this9.playButton.style.display = 'none';
+        _this9.pauseButton.style.display = 'block';
+        _this9.stepButton.classList.add('button-disabled');
+        _this9.stepButton.removeEventListener('click', stepButtonClickHandler);
       });
 
       // Clear grid on clear button click
       this.clearButton.addEventListener('click', function () {
-        _this8.sim.generateGrid();
+        _this9.sim.generateGrid();
       });
 
       // Seed grid on seed button click
       this.seedButton.addEventListener('click', function () {
-        _this8.sim.seed();
-        _this8.sim.update();
+        _this9.sim.seed();
+        _this9.sim.update();
       });
     }
   }, {
