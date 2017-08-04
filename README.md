@@ -133,8 +133,15 @@ It was soon determined that:
 
 so, a pruned down version of the `engine.js` was written in the form of `simulation.js`.
 
-<!-- Links -->
-[primordial-playground]: http://boothandrewd.github.io/conways-gol
+## Credits
+Step icon made by [Dave Gandy](https://www.flaticon.com/authors/dave-gandy) from [www.flaticon.com](https://www.flaticon.com/)
+
+Trash icon made by [Google](https://www.flaticon.com/authors/google) from [www.flaticon.com](https://www.flaticon.com/) is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
+
+Other icons made by [Freepik](http://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/) is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
+
+<!-- ### Links ### -->
+[primordial-playground]: http://boothandrewd.github.io/primordial-playground
 [conways-gol-wiki]: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
 [simulation-code]: [lib/simulation.js]
 [interface-code]: [lib/interface.js]
