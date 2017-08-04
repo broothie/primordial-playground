@@ -7,33 +7,38 @@
     <title>Conway's Game of Life</title>
   </head>
   <body>
-    <div class="mouseover-hide">hide</div>
-    <main>
-      <section class="info">
-        <h1><a href="index.html">Conway's Game of Life</a></h1>
+    <section class="info">
+      <h1><a href="index.html">Conway's Game of Life</a></h1>
 
-        <article>
-          <a href="https://www.math.princeton.edu/directory/john-conway">John Conway</a>'s
-          <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Game of Life</a>
-          is a "zero-player game" based on the following rules for a cellular automaton:
+      <article>
+        <a href="https://www.math.princeton.edu/directory/john-conway">John Conway</a>'s
+        <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Game of Life</a>
+        is a "zero-player game" based on the following rules for a cellular automaton:
 
-          <ol>
-            <li>Any live cell with fewer than two live neighbors dies, as if caused by underpopulation.</li>
-            <li>Any live cell with <span>two or three</span> live neighbors lives on to the next generation.</li>
-            <li>Any live cell with more than three live neighbors dies, as if by overpopulation.</li>
-            <li>Any dead cell with <span>exactly three</span> live neighbors becomes a live cell, as if by reproduction.</li>
-          </ol>
+        <ol>
+          <li>Any live cell with fewer than two live neighbors dies, as if caused by underpopulation.</li>
+          <li>Any live cell with <span>two or three</span> live neighbors lives on to the next generation.</li>
+          <li>Any live cell with more than three live neighbors dies, as if by overpopulation.</li>
+          <li>Any dead cell with <span>exactly three</span> live neighbors becomes a live cell, as if by reproduction.</li>
+        </ol>
 
-          Check the code out on
-          <a href="https://github.com/boothandrewd/conways-gol/#readme">GitHub</a>.
-        </article>
-      </section>
+        This simulation, however, lets you do more than just live in the world on Conway. Feel free to play with the step rate, color scheme, and survival rules with the controls at the bottom!
 
-      <section class="controls">
-        <form id="controls-form">
+        <br/><br/>
+
+        Check the code out on
+        <a href="https://github.com/boothandrewd/conways-gol/#readme">GitHub</a>.
+      </article>
+    </section>
+
+    <section class="controls">
+      <form id="controls-form">
+        <h1>Creatures &amp; Patterns</h1>
+        <div>
           <div id="pattern-buttons"></div>
+        </div>
 
-          <hr/>
+        <hr/>
 
         <div class="rule-status-section">
           <div class="color-schemes">
@@ -60,36 +65,49 @@
               <label for="dead-color">Dead</label>
             </div>
           </div>
+        </div>
 
-          <hr/>
-
-          <div class="step-rate">
-            <label for="stepRate">Step Rate: <span id="stepRate">12</span></label>
-            <input id="stepRateSlider" type="range" value="12" min="1" max="300" step="1"/>
+        <hr/>
+        
+        <div class="rule-controls">
+          <div>
+            <h1>Survival rule:</h1>
+            <input id="survival-rule" type="text" value="2,3">
           </div>
-
-          <hr/>
-        </form>
-
-        <footer class="closed-controls">
-          <div class="step-controls">
-            <img id="pause" src="assets/img/pause-bars.png" alt="pause">
-            <img id="play" src="assets/img/play-button.png" alt="play">
-            <img id="step" src="assets/img/step-forward.png" alt="step">
-            <img id="clear" src="assets/img/rubbish-bin-delete-button.png" alt="clear">
-            <img id="seed" src="assets/img/coffee-beans.png" alt="seed">
+          <div>
+            <h1>Birth rule:</h1>
+            <input id="birth-rule" type="text" value="3">
           </div>
+        </div>
 
-          <div class="hud">
-            <span>
-              <p>Population:</p><span id="population-count"></span>
-            </span>
-            <span>
-              <p>Generation:</p><span id="generation-count">0</span>
-            </span>
-          </div>
-        </footer>
-      </section>
-    </main>
+        <hr/>
+
+        <div class="step-rate">
+          <label for="stepRate">Step Rate: <span id="stepRate">12</span></label>
+          <input id="stepRateSlider" type="range" value="12" min="1" max="300" step="1"/>
+        </div>
+
+        <hr/>
+      </form>
+
+      <footer class="closed-controls">
+        <div class="step-controls">
+          <img id="pause" src="assets/img/pause-bars.png" alt="pause">
+          <img id="play" src="assets/img/play-button.png" alt="play">
+          <img id="step" src="assets/img/step-forward.png" alt="step">
+          <img id="clear" src="assets/img/rubbish-bin-delete-button.png" alt="clear">
+          <img id="seed" src="assets/img/coffee-beans.png" alt="seed">
+        </div>
+
+        <div class="hud">
+          <span>
+            <p>Population:</p><span id="population-count"></span>
+          </span>
+          <span>
+            <p>Generation:</p><span id="generation-count">0</span>
+          </span>
+        </div>
+      </footer>
+    </section>
   </body>
 </html>
