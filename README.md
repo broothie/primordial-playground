@@ -1,15 +1,19 @@
 # [Primordial Playground][primordial-playground]
 
-The Primordial Playground is a colorful, interactive [Game of Life][conways-gol-wiki] simulator, built with pure JavaScript, HTML, and CSS. Using [simulation][simulation-code], [interface][interface-code], and [cell][cell-code] models, a large degree of interactivity is achieved.
+The Primordial Playground is a colorful, interactive [Game of Life][conways-gol-wiki] simulator, built with pure JavaScript, HTML, and CSS.
 
 ## Features
 
-This sandbox allows you to:
-- pause, play, step-through, and speed-adjust the simulation,
-- manually manipulation cell statuses in real simulation time,
-- drop pre-designed patterns and creatures on the grid,
-- alter life/death rules,
-- and adjust the color scheme.
+Pause, play, step-through, and speed-adjust the simulation and manually manipulation cell statuses in real simulation time, as well as...
+
+![playing with patterns](docs/playing-with-patterns.gif)
+...drop pre-designed patterns and creatures on the grid, ...
+
+![playing with rules](docs/playing-with-rules.gif)
+...alter life/death rules for some pretty interesting effects, ...
+
+![changing-color-schemes](docs/changing-color-schemes.gif)
+...and adjust the colors, with included presets.
 
 ## Implementation
 
@@ -18,6 +22,8 @@ This sandbox allows you to:
 This simulation is built using purely ["Vanilla JavaScript"][vanilla-js] with the help of [webpack][webpack] and [Babel][babel]. The rest of the interface is built with HTML5 and CSS, with the help of [Sass][sass] for the SCSS compilation. It's hosted courtesy of [GitHub Pages][gh-pages]
 
 ### Technical Challenges
+
+Using [simulation][simulation-code], [interface][interface-code], and [cell][cell-code] models, a large degree of interactivity is achieved.
 
 #### Cell Updating
 
