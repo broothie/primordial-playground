@@ -154,6 +154,8 @@ input[type="text"] {
     .controls form hr {
       margin: 10px 0;
       border: 1px solid WhiteSmoke; }
+    .controls form h1 {
+      font-size: 13px; }
   .controls:hover {
     width: 250px;
     opacity: 1; }
@@ -199,8 +201,17 @@ input[type="text"] {
   flex-flow: row;
   justify-content: space-between; }
 
+.color-schemes ul {
+  text-align: center; }
+  .color-schemes ul li {
+    margin-top: 3px; }
+  .color-schemes ul a {
+    cursor: pointer; }
+
 .status-colors {
   margin-bottom: 20px; }
+  .status-colors input[type="color"] {
+    cursor: pointer; }
 
 .rule-status-section {
   margin-bottom: 10px;
@@ -209,16 +220,19 @@ input[type="text"] {
   justify-content: space-between; }
 
 .rule-controls {
-  width: 110px;
+  width: 100%;
   display: flex;
-  flex-flow: column;
-  justify-content: space-around; }
+  flex-flow: row;
+  justify-content: space-between; }
+  .rule-controls div {
+    text-align: center; }
 
 #pattern-buttons {
   display: flex;
   flex-flow: column;
   height: 250px;
-  overflow-y: scroll; }
+  overflow-y: scroll;
+  border: 1px solid black; }
   #pattern-buttons button {
     min-height: 20px; }
 
