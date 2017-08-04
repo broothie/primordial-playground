@@ -91,10 +91,16 @@ document.addEventListener('DOMContentLoaded', function () {
 "use strict";
 
 
+/*
+ * Mods negative numbers correctly
+ */
 Number.prototype.mod = function (n) {
   return (this % n + n) % n;
 };
 
+/*
+ * Flattens nested array
+ */
 Array.prototype.flatten = function () {
   var result = [];
 
@@ -110,7 +116,7 @@ Array.prototype.flatten = function () {
 };
 
 /*
- * Assumes rectangular matrix
+ * Rotates rectangular matrix
  */
 Array.prototype.rotate = function () {
   var originalWidth = this[0].length;
@@ -128,6 +134,9 @@ Array.prototype.rotate = function () {
   return array;
 };
 
+/*
+ * In-place concatenation
+ */
 Array.prototype.pushAll = function (other) {
   var _this = this;
 
@@ -254,35 +263,35 @@ var _class = function () {
   }, {
     key: 'update',
     value: function update() {
+      var _this2 = this;
+
       var fromClick = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-      // 2 types of update: one from loop, one from manual cell manipulation
+      // Advance cell states
+      if (!fromClick) {
+        this.cells.forEach(function (cell) {
+          return cell.step();
+        });
+        this.generation++;
+      }
 
-      // First, advance all cell states
-      if (!fromClick) this.cells.forEach(function (cell) {
-        return cell.step();
-      });
+      // Update cells
+      this.population = 0;
       this.cells.forEach(function (cell) {
-        return cell.update(fromClick);
+        cell.update(fromClick);
+        if (cell.alive) _this2.population++;
       });
-      if (!fromClick) this.generation++;
     }
   }, {
     key: 'draw',
     value: function draw() {
-      var _this2 = this;
-
-      this.canvas.width = window.innerWidth;
-      this.canvas.height = window.innerHeight;
-
-      this.population = 0;
+      // Update cells and interface
       this.cells.forEach(function (cell) {
-        cell.draw();
-        if (cell.alive) _this2.population++;
+        return cell.draw();
       });
-
       this.iface.draw();
 
+      // Call next draw routine
       requestAnimationFrame(this.draw.bind(this));
     }
   }, {
@@ -312,12 +321,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _patterns = __webpack_require__(4);
 
-var _patterns2 = _interopRequireDefault(_patterns);
-
-var _pattern_parser = __webpack_require__(5);
-
-var _pattern_parser2 = _interopRequireDefault(_pattern_parser);
-
 var _colors = __webpack_require__(6);
 
 var _colors2 = _interopRequireDefault(_colors);
@@ -334,36 +337,46 @@ var _class = function () {
 
     Object.assign(this, {
       survivalCounts: [2, 3],
-      birthCounts: [3],
-
-      dead: '#004080',
-      emerging: '#0080FF',
-      dying: '#CCFF66',
-      alive: '#66FF66'
+      birthCounts: [3]
     }, options);
 
     this.body = document.getElementsByTagName('body')[0];
     this.controls = document.getElementsByClassName('controls')[0];
     this.form = document.getElementById('controls-form');
+
+    // Initialize pattern holder to empty
     this.currentPattern = null;
 
+    // Set color scheme randomly
     this.setColor(Object.keys(_colors2.default)[Math.floor(Math.random() * Object.keys(_colors2.default).length)]);
 
+    // Update canvas size
+    this.adjustWindowSize();
+    this.body.addEventListener('resize', this.adjustWindowSize.bind(this));
+
+    // Set up
     this.setUpMouseTracking();
     this.setUpPatterns();
+    this.setUpRuleControls();
     this.setUpColorSchemes();
     this.setUpColorPickers();
-    this.setUpRuleControls();
     this.setUpStepRateSlider();
     this.setUpStepControls();
     this.setUpHud();
   }
 
   _createClass(_class, [{
+    key: 'adjustWindowSize',
+    value: function adjustWindowSize() {
+      this.sim.canvas.width = window.innerWidth;
+      this.sim.canvas.height = window.innerHeight;
+    }
+  }, {
     key: 'setUpMouseTracking',
     value: function setUpMouseTracking() {
       var _this = this;
 
+      // Set up mouse position tracking
       this.sim.canvas.addEventListener('mousemove', function (_ref) {
         var clientX = _ref.clientX,
             clientY = _ref.clientY;
@@ -372,17 +385,21 @@ var _class = function () {
         _this.mouseY = clientY;
       });
 
+      // Set up click handler
       this.sim.canvas.addEventListener('click', function () {
         _this.sim.update(true);
 
+        // Clear pattern if there is one
         if (_this.currentPattern) {
           _this.clearPattern();
         }
       });
 
+      // Set up right click handler
       this.sim.canvas.addEventListener('contextmenu', function (e) {
         e.preventDefault();
 
+        // Rotate patter if there is one
         if (_this.currentPattern) {
           _this.currentPattern = _this.currentPattern.rotate();
         }
@@ -395,25 +412,35 @@ var _class = function () {
     value: function setUpPatterns() {
       var _this2 = this;
 
+      // Remove current pattern with escape key
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
           _this2.clearPattern();
         }
       });
 
+      // Set up patterns in controls menu
+      var patternButtons = document.getElementById('pattern-buttons');
+
       var _loop = function _loop(patternName) {
-        var patternButtons = document.getElementById('pattern-buttons');
+        // Create pattern button
         var patternButton = document.createElement('button');
         patternButton.innerText = patternName;
+
+        // Add to list
         patternButtons.appendChild(patternButton);
+
+        // Add event handler
         patternButton.addEventListener('click', function (event) {
           event.preventDefault();
-          _this2.currentPattern = (0, _pattern_parser2.default)(_patterns2.default[patternName]);
+
+          // Store pattern in pattern holder
+          _this2.currentPattern = (0, _patterns.patternParser)(_patterns.patterns[patternName]);
           _this2.body.style.cursor = 'none';
         });
       };
 
-      for (var patternName in _patterns2.default) {
+      for (var patternName in _patterns.patterns) {
         _loop(patternName);
       }
     }
@@ -428,19 +455,15 @@ var _class = function () {
     value: function setUpRuleControls() {
       var _this3 = this;
 
+      // Add event handler to each rule input box
       ['survival', 'birth'].forEach(function (ruleName) {
         var ruleControl = document.getElementById(ruleName + '-rule');
         ruleControl.addEventListener('input', function (event) {
-          ruleControl.style.border = '1px solid Gray';
-          var value = event.target.value;
-          try {
-            var counts = value.split(',').map(function (el) {
-              return parseInt(el);
-            });
-            _this3[ruleName + 'Counts'] = counts;
-          } catch (e) {
-            ruleControl.style.border = '1px solid Red';
-          }
+          // Update rule neighbor counts
+          var counts = event.target.value.split(',').map(function (el) {
+            return parseInt(el);
+          });
+          _this3[ruleName + 'Counts'] = counts;
         });
       });
     }
@@ -449,10 +472,13 @@ var _class = function () {
     value: function setColor(schemeName) {
       var _this4 = this;
 
+      // Color setting helper method
+      var colorScheme = _colors2.default[schemeName];
       ['dead', 'emerging', 'dying', 'alive'].forEach(function (statusName, idx) {
-        _this4[statusName] = _colors2.default[schemeName][idx];
+        // Set interface value to color scheme color
+        _this4[statusName] = colorScheme[idx];
         var colorPicker = document.getElementById(statusName + '-color');
-        colorPicker.value = _colors2.default[schemeName][idx];
+        colorPicker.value = colorScheme[idx];
       });
     }
   }, {
@@ -462,10 +488,15 @@ var _class = function () {
 
       var schemeList = document.querySelector('.color-schemes > ul');
       Object.keys(_colors2.default).forEach(function (colorScheme) {
+        // Make and append new `li`
         var schemeLi = document.createElement('li');
         schemeList.appendChild(schemeLi);
+
+        // Make and append `a` to `li`
         var schemeLink = document.createElement('a');
         schemeLi.appendChild(schemeLink);
+
+        // Set link text and handler
         schemeLink.innerText = colorScheme;
         schemeLi.addEventListener('click', function (e) {
           _this5.setColor(colorScheme);
@@ -478,17 +509,27 @@ var _class = function () {
       var _this6 = this;
 
       ['alive', 'dying', 'emerging', 'dead'].forEach(function (colorPickerName) {
+        // Set color picker color
         var colorPicker = document.getElementById(colorPickerName + '-color');
         colorPicker.value = _this6[colorPickerName];
+
+        // Add open handler to control how controls overlay appears during
+        //  color picking
         colorPicker.addEventListener('click', function () {
+          // Keep form up during color pick
           _this6.form.style.display = 'block';
           _this6.controls.style.opacity = 1;
-          colorPicker.addEventListener('focusin', function () {
+
+          // Add focus handler, which removes itself after use
+          var focusHandler = function focusHandler() {
             _this6.form.style.display = null;
             _this6.controls.style.opacity = null;
-          });
+            colorPicker.removeEventListener('focusin', focusHandler);
+          };
+          colorPicker.addEventListener('focusin', focusHandler.bind(_this6));
         });
 
+        // Add color pick handler
         colorPicker.addEventListener('change', function (event) {
           _this6[colorPickerName] = event.target.value;
         });
@@ -499,8 +540,13 @@ var _class = function () {
     value: function setUpStepRateSlider() {
       var _this7 = this;
 
+      // Set step rate to reflect initial rate
       var stepRateSlider = document.getElementById('stepRateSlider');
+      var stepRate = document.getElementById('stepRate');
       stepRateSlider.value = this.sim.stepRate;
+      stepRate.innerText = this.sim.stepRate;
+
+      // Add input handler
       stepRateSlider.addEventListener('input', function (event) {
         document.getElementById('stepRate').innerText = stepRateSlider.value;
         _this7.sim.stepRate = parseInt(stepRateSlider.value);
@@ -511,20 +557,23 @@ var _class = function () {
     value: function setUpStepControls() {
       var _this8 = this;
 
+      // Get each control
       ['pause', 'play', 'step', 'clear', 'seed'].forEach(function (buttonName) {
         _this8[buttonName + 'Button'] = document.getElementById(buttonName);
       });
 
+      // Hide play and seed buttons initially, and disable step button
       ['play', 'seed'].forEach(function (buttonName) {
         _this8[buttonName + 'Button'].style.display = 'none';
       });
-
       this.stepButton.classList.add('button-disabled');
 
+      // Run update on step
       var stepButtonClickHandler = function stepButtonClickHandler() {
         _this8.sim.update();
       };
 
+      // Pause and change display on pause button click
       this.pauseButton.addEventListener('click', function () {
         _this8.sim.paused = true;
         _this8.pauseButton.style.display = 'none';
@@ -533,6 +582,7 @@ var _class = function () {
         _this8.stepButton.addEventListener('click', stepButtonClickHandler);
       });
 
+      // Play and change display on play butto click
       this.playButton.addEventListener('click', function () {
         _this8.sim.paused = false;
         _this8.playButton.style.display = 'none';
@@ -541,10 +591,12 @@ var _class = function () {
         _this8.stepButton.removeEventListener('click', stepButtonClickHandler);
       });
 
+      // Clear grid on clear button click
       this.clearButton.addEventListener('click', function () {
         _this8.sim.generateGrid();
       });
 
+      // Seed grid on seed button click
       this.seedButton.addEventListener('click', function () {
         _this8.sim.seed();
         _this8.sim.update();
@@ -553,12 +605,14 @@ var _class = function () {
   }, {
     key: 'setUpHud',
     value: function setUpHud() {
+      // Get hud references
       this.populationCount = document.getElementById('population-count');
       this.generationCount = document.getElementById('generation-count');
     }
   }, {
     key: 'draw',
     value: function draw() {
+      // Update clear and seed buttons depending on population
       if (this.sim.population === 0) {
         this.clearButton.style.display = 'none';
         this.seedButton.style.display = 'block';
@@ -567,6 +621,7 @@ var _class = function () {
         this.clearButton.style.display = 'block';
       }
 
+      // Update hud
       this.populationCount.innerText = this.sim.population;
       this.generationCount.innerText = this.sim.generation;
     }
@@ -587,7 +642,61 @@ exports.default = _class;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = {
+/*
+ * GOL pattern parser
+ */
+var patternParser = exports.patternParser = function patternParser(patternCode) {
+  var grid = [[]];
+  var previousCount = 1;
+
+  // Loop until the finishing '!'
+  var match = void 0,
+      lastRow = void 0;
+  while (true) {
+    // Parse first chunk of current pattern
+    match = patternCode.match(/(\d+)|b|o|\$|\!/)[0];
+
+    // Get last row in grid
+    lastRow = grid[grid.length - 1];
+
+    switch (match) {
+      // Push some number of '1's
+      case 'o':
+        lastRow.pushAll(Array(previousCount).fill(1));
+        previousCount = 1;
+        break;
+
+      // Push some number of '0's
+      case 'b':
+        lastRow.pushAll(Array(previousCount).fill(0));
+        previousCount = 1;
+        break;
+
+      // Push some number of 0-filled arrays, and then an empty
+      case '$':
+        for (var i = 0; i < previousCount - 1; i++) {
+          grid.push(Array(grid[0].length).fill(0));
+        }
+        grid.push([]);
+        previousCount = 1;
+        break;
+
+      // Done
+      case '!':
+        return grid;
+
+      // Next token has multiple occurences
+      default:
+        previousCount = parseInt(match);
+        break;
+    }
+
+    // Remove matched pattern from patternCode
+    patternCode = patternCode.slice(match.length);
+  }
+};
+
+var patterns = exports.patterns = {
   'Spaceship': 'b5o$o4bo$5bo$o3bob!',
   'Glider': 'bob$2bo$3o!',
   'Gosper Glider Gun': '24bo11b$22bobo11b$12b2o6b2o12b2o$11bo3bo4b2o12b2o$2o8bo5bo3b2o14b$2o8bo3bob2o4bobo11b$10bo5bo7bo11b$11bo3bo20b$12b2o!',
@@ -616,61 +725,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function (patternCode) {
-  var grid = [[]];
-  var previousCount = 1;
-
-  var match = void 0,
-      lastRow = void 0;
-  while (true) {
-    var loopBreak = false;
-    match = patternCode.match(/(\d+)|b|o|\$|\!/)[0];
-    lastRow = grid[grid.length - 1];
-
-    switch (match) {
-      case 'o':
-        lastRow.pushAll(Array(previousCount).fill(1));
-        previousCount = 1;
-        break;
-      case 'b':
-        lastRow.pushAll(Array(previousCount).fill(0));
-        previousCount = 1;
-        break;
-      case '$':
-        for (var i = 0; i < previousCount - 1; i++) {
-          grid.push(Array(grid[0].length).fill(0));
-        }
-        grid.push([]);
-        previousCount = 1;
-        break;
-      case '!':
-        loopBreak = true;
-        break;
-      default:
-        previousCount = parseInt(match);
-        break;
-    }
-
-    if (loopBreak) {
-      break;
-    }
-    patternCode = patternCode.slice(match.length);
-  }
-
-  return grid;
-};
-
-/***/ }),
+/* 5 */,
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -732,13 +787,6 @@ var _class = function () {
       this.alive = this.willLive;
     }
   }, {
-    key: 'getAliveNeighbors',
-    value: function getAliveNeighbors() {
-      this.aliveNeighbors = this.neighbors.filter(function (cell) {
-        return cell.alive;
-      }).length;
-    }
-  }, {
     key: 'update',
     value: function update() {
       var _this = this;
@@ -746,7 +794,9 @@ var _class = function () {
       var fromClick = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
       var iface = this.sim.iface;
-      this.getAliveNeighbors();
+      var aliveNeighbors = this.neighbors.filter(function (cell) {
+        return cell.alive;
+      }).length;
 
       if (fromClick) {
         if (this.hovered) {
@@ -760,7 +810,7 @@ var _class = function () {
       }
 
       if (this.alive) {
-        if (iface.survivalCounts.includes(this.aliveNeighbors)) {
+        if (iface.survivalCounts.includes(aliveNeighbors)) {
           // Survive
           this.willLive = true;
         } else {
@@ -768,7 +818,7 @@ var _class = function () {
           this.willLive = false;
         }
       } else {
-        if (iface.birthCounts.includes(this.aliveNeighbors)) {
+        if (iface.birthCounts.includes(aliveNeighbors)) {
           // Birth
           this.willLive = true;
         } else {

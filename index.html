@@ -4,11 +4,11 @@
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="bundle.css"/>
     <script src="bundle.js" charset="utf-8" defer></script>
-    <title>Conway's Game of Life</title>
+    <title>Primordial Playground</title>
   </head>
   <body>
     <section class="info">
-      <h1><a href="index.html">Conway's Game of Life</a></h1>
+      <h1><a href="index.html">Primordial Playground</a></h1>
 
       <article>
         <a href="https://www.math.princeton.edu/directory/john-conway">John Conway</a>'s
@@ -16,13 +16,27 @@
         is a "zero-player game" based on the following rules for a cellular automaton:
 
         <ol>
-          <li>Any live cell with fewer than two live neighbors dies, as if caused by underpopulation.</li>
-          <li>Any live cell with <span>two or three</span> live neighbors lives on to the next generation.</li>
-          <li>Any live cell with more than three live neighbors dies, as if by overpopulation.</li>
-          <li>Any dead cell with <span>exactly three</span> live neighbors becomes a live cell, as if by reproduction.</li>
+          <li>
+            Any live cell with fewer than two live neighbors dies, as if caused
+            by underpopulation.
+          </li>
+          <li>
+            Any live cell with <span>two or three</span> live neighbors lives on
+             to the next generation.
+          </li>
+          <li>
+            Any live cell with more than three live neighbors dies, as if by
+            overpopulation.
+          </li>
+          <li>
+            Any dead cell with <span>exactly three</span> live neighbors becomes
+            a live cell, as if by reproduction.
+          </li>
         </ol>
 
-        This simulation, however, lets you do more than just live in the world on Conway. Feel free to play with the step rate, color scheme, and survival rules with the controls at the bottom!
+        This simulation, however, lets you do more than just live in the world
+        of Conway. Feel free to play with the step rate, color scheme, and
+        survival rules using the controls in the opposite corner!
 
         <br/><br/>
 
@@ -68,7 +82,7 @@
         </div>
 
         <hr/>
-        
+
         <div class="rule-controls">
           <div>
             <h1>Survival rule:</h1>
@@ -83,8 +97,8 @@
         <hr/>
 
         <div class="step-rate">
-          <label for="stepRate">Step Rate: <span id="stepRate">12</span></label>
-          <input id="stepRateSlider" type="range" value="12" min="1" max="300" step="1"/>
+          <label for="stepRate">Step Rate: <span id="stepRate">100</span></label>
+          <input id="stepRateSlider" type="range" value="100" min="1" max="500" step="1"/>
         </div>
 
         <hr/>
