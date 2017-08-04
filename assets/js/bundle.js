@@ -162,7 +162,7 @@ var _interface = __webpack_require__(3);
 
 var _interface2 = _interopRequireDefault(_interface);
 
-var _cell = __webpack_require__(7);
+var _cell = __webpack_require__(6);
 
 var _cell2 = _interopRequireDefault(_cell);
 
@@ -321,7 +321,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _patterns = __webpack_require__(4);
 
-var _colors = __webpack_require__(6);
+var _colors = __webpack_require__(5);
 
 var _colors2 = _interopRequireDefault(_colors);
 
@@ -363,6 +363,20 @@ var _class = function () {
     this.setUpStepRateSlider();
     this.setUpStepControls();
     this.setUpHud();
+
+    // Set up opening modal
+    var infoArticle = document.querySelector('.info > article');
+    infoArticle.style.display = 'block';
+    infoArticle.style.opacity = 1;
+    infoArticle.style.width = '320px';
+
+    var firstClickHandler = function firstClickHandler(event) {
+      infoArticle.style.display = null;
+      infoArticle.style.opacity = null;
+      infoArticle.style.width = null;
+      document.removeEventListener('click', firstClickHandler);
+    };
+    document.addEventListener('click', firstClickHandler);
   }
 
   _createClass(_class, [{
@@ -725,8 +739,7 @@ var patterns = exports.patterns = {
 };
 
 /***/ }),
-/* 5 */,
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -748,7 +761,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

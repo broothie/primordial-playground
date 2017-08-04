@@ -6,14 +6,14 @@ The Primordial Playground is a colorful, interactive [Game of Life][conways-gol-
 
 Pause, play, step-through, and speed-adjust the simulation and manually manipulation cell statuses in real simulation time, as well as...
 
+drop pre-designed patterns and creatures on the grid, ...
 ![playing with patterns](docs/playing-with-patterns.gif)
-...drop pre-designed patterns and creatures on the grid, ...
 
+alter life/death rules for some pretty interesting effects, ...
 ![playing with rules](docs/playing-with-rules.gif)
-...alter life/death rules for some pretty interesting effects, ...
 
+and adjust the colors, with included presets.
 ![changing-color-schemes](docs/changing-color-schemes.gif)
-...and adjust the colors, with included presets.
 
 ## Implementation
 
@@ -138,6 +138,13 @@ It was soon determined that:
   - detracted from user experience in terms of performance
 
 so, a pruned down version of the `engine.js` was written in the form of `simulation.js`.
+
+## Future Improvements
+- [ ] Add rule presets
+- [ ] Add dynamic board expansion
+- [ ] Add online support
+- [ ] Add other types of cellular automata
+- [ ] Allow users to save board, patterns, and color schemes
 
 ## Credits
 Step icon made by [Dave Gandy](https://www.flaticon.com/authors/dave-gandy) from [www.flaticon.com](https://www.flaticon.com/)

@@ -25,7 +25,7 @@ module.exports = {
   context: __dirname,
   entry: './lib/entry.js',
   output: {
-    filename: './bundle.js'
+    filename: './assets/js/bundle.js'
   },
   resolve: {
     extensions: ['.js', '*']

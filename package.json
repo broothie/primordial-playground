@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "js": "webpack -w",
-    "css": "sass --watch ./assets/scss/entry.scss:./bundle.css"
+    "css": "sass --watch ./assets/scss/entry.scss:./assets/css/bundle.css"
   },
   "repository": {
     "type": "git",
