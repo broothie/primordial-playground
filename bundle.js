@@ -76,13 +76,7 @@ var _simulation = __webpack_require__(2);
 
 var _simulation2 = _interopRequireDefault(_simulation);
 
-var _pattern_parser = __webpack_require__(7);
-
-var _pattern_parser2 = _interopRequireDefault(_pattern_parser);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-window.patternParser = _pattern_parser2.default;
 
 document.addEventListener('DOMContentLoaded', function () {
   var canvas = document.createElement('canvas');
