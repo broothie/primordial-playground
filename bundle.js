@@ -772,7 +772,7 @@ var _class = function () {
       x: 0,
       y: 0,
       size: 10,
-      color: this.sim.iface.dead,
+      status: 'dead',
       alive: false,
       neighbors: []
     }, options);
@@ -798,6 +798,7 @@ var _class = function () {
         return cell.alive;
       }).length;
 
+      // Handle updating in the event of a manual toggle. Must update neighbors
       if (fromClick) {
         if (this.hovered) {
           this.alive = !this.alive;
@@ -809,21 +810,26 @@ var _class = function () {
         });
       }
 
+      // Determine next state
       if (this.alive) {
         if (iface.survivalCounts.includes(aliveNeighbors)) {
           // Survive
           this.willLive = true;
+          this.status = 'alive';
         } else {
           // Die
           this.willLive = false;
+          this.status = 'dying';
         }
       } else {
         if (iface.birthCounts.includes(aliveNeighbors)) {
           // Birth
           this.willLive = true;
+          this.status = 'emerging';
         } else {
           // Dead
           this.willLive = false;
+          this.status = 'dead';
         }
       }
     }
@@ -839,30 +845,25 @@ var _class = function () {
           context = _sim.context,
           iface = _sim.iface;
 
-
-      if (this.alive) {
-        if (this.willLive) {
-          this.color = iface.alive;
-        } else {
-          this.color = iface.dying;
-        }
-      } else {
-        if (this.willLive) {
-          this.color = iface.emerging;
-        } else {
-          this.color = iface.dead;
-        }
-      }
+      // Determine if hovered
 
       this.hovered = displayX <= iface.mouseX && iface.mouseX < displayX + size && displayY <= iface.mouseY && iface.mouseY < displayY + size;
 
+      // Determine if under pattern blueprint
       this.patternMapped = false;
       if (iface.currentPattern) {
+        // Takes priority over hovered
         this.hovered = false;
+
+        // Loop through pattern
         iface.currentPattern.forEach(function (row, rowIdx) {
           row.forEach(function (cellStatus, colIdx) {
+
+            // Find offset based on row and column indices
             var patternOffsetX = iface.mouseX + colIdx * size;
             var patternOffsetY = iface.mouseY + rowIdx * size;
+
+            // If mouse offset within bounds of cell, highlight
             if (displayX <= patternOffsetX && patternOffsetX < displayX + size && displayY <= patternOffsetY && patternOffsetY < displayY + size && cellStatus === 1) {
               _this2.patternMapped = true;
             }
@@ -870,14 +871,17 @@ var _class = function () {
         });
       }
 
+      // Determine if highlighted
       var highlighted = this.hovered || this.patternMapped;
 
+      // Draw outline if highlighted
       if (highlighted) {
         context.fillStyle = 'Black';
         context.fillRect(displayX, displayY, size, size);
       }
 
-      context.fillStyle = this.color;
+      // Draw cell
+      context.fillStyle = iface[this.status];
       context.fillRect(displayX + (highlighted ? 1 : 0), displayY + (highlighted ? 1 : 0), size - (highlighted ? 2 : 0), size - (highlighted ? 2 : 0));
     }
   }]);
