@@ -154,7 +154,7 @@ Trash icon made by [Google](https://www.flaticon.com/authors/google) from [www.f
 Other icons made by [Freepik](http://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/) is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
 
 <!-- ### Links ### -->
-[primordial-playground]: http://boothandrewd.github.io/primordial-playground
+[primordial-playground]: http://andydennisonbooth.github.io/primordial-playground
 [conways-gol-wiki]: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
 [simulation-code]: [lib/simulation.js]
 [interface-code]: [lib/interface.js]

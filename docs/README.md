@@ -1,4 +1,4 @@
-# [Conway's Game of Life](https://boothandrewd.github.io/conways-gol/)
+# [Conway's Game of Life](https://andydennisonbooth.github.io/conways-gol/)
 ## Background
 John Conway's Game of Life is a "zero-player game" based on the following rules for a cellular automaton:
 

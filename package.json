@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/boothandrewd/conways-gol.git"
+    "url": "git+https://github.com/andydennisonbooth/conways-gol.git"
   },
   "author": "Andrew D Booth",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/boothandrewd/conways-gol/issues"
+    "url": "https://github.com/andydennisonbooth/conways-gol/issues"
   },
-  "homepage": "https://github.com/boothandrewd/conways-gol#readme",
+  "homepage": "https://github.com/andydennisonbooth/conways-gol#readme",
   "devDependencies": {
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
