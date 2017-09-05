@@ -93,6 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /*
  * Mods negative numbers correctly
+ * https://stackoverflow.com/questions/4467539/javascript-modulo-not-behaving
  */
 Number.prototype.mod = function (n) {
   return (this % n + n) % n;
@@ -339,7 +340,12 @@ var _class = function () {
 
     Object.assign(this, {
       survivalCounts: [2, 3],
-      birthCounts: [3]
+      birthCounts: [3],
+
+      dead: '#004080',
+      emerging: '#0080FF',
+      dying: '#CCFF66',
+      alive: '#66FF66'
     }, options);
 
     this.body = document.getElementsByTagName('body')[0];
@@ -351,7 +357,7 @@ var _class = function () {
     this.currentPattern = null;
 
     // Set color scheme randomly
-    this.setColor(Object.keys(_colors2.default)[Math.floor(Math.random() * Object.keys(_colors2.default).length)]);
+    // this.setColor(Object.keys(colors)[Math.floor(Math.random() * Object.keys(colors).length)]);
 
     // Update canvas size
     this.adjustWindowSize();
@@ -361,8 +367,8 @@ var _class = function () {
     this.setUpMouseTracking();
     this.setUpPatterns();
     this.setUpRuleControls();
-    this.setUpColorSchemes();
-    this.setUpColorPickers();
+    // this.setUpColorSchemes();
+    // this.setUpColorPickers();
     this.setUpStepRateSlider();
     this.setUpStepControls();
     this.setUpHud();
